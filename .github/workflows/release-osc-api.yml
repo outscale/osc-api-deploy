@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: master
+          ref: main
       - name: Getting release details
         id: release
         run: echo ::set-output name=TAG::${GITHUB_REF#refs/tags/}
@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: master
+          ref: main
       - name: Getting release details
         id: release
         run: echo ::set-output name=TAG::${GITHUB_REF#refs/tags/}
@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: master
+          ref: main
       - name: Getting release details
         id: release
         run: echo ::set-output name=TAG::${GITHUB_REF#refs/tags/}
@@ -51,7 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: master
+          ref: main
       - name: Getting release details
         id: release
         run: echo ::set-output name=TAG::${GITHUB_REF#refs/tags/}
@@ -65,7 +65,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: master
+          ref: main
       - name: Getting release details
         id: release
         run: echo ::set-output name=TAG::${GITHUB_REF#refs/tags/}
@@ -79,7 +79,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: master
+          ref: main
       - name: Getting release details
         id: release
         run: echo ::set-output name=TAG::${GITHUB_REF#refs/tags/}
