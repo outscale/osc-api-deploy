@@ -11,6 +11,9 @@
 require 'psych'
 
 api = Psych.load_file(ARGV[0])
+old = Psych.load_file(ARGV[1])
+
+old_schema = old["components"]["schemas"]
 
 api["components"]["schemas"].each do |call_name, call|
   #puts key
@@ -19,6 +22,12 @@ api["components"]["schemas"].each do |call_name, call|
     if arg_info.key?("oneOf") then
       arg_info["oneOf"][0].each do |key, val|
         arg_info[key] = val
+      end
+      if old_schema.key?(call_name) then
+        old_arg_prop = old_schema[call_name]["properties"]
+        if old_arg_prop.key?(arg_name) then
+          arg_info["format"] = old_arg_prop[arg_name]["format"]
+        end
       end
       arg_info.delete("oneOf")
     end
