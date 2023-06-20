@@ -27,8 +27,12 @@ api["components"]["schemas"].each do |call_name, call|
     end
     if old_schema.key?(call_name) then
       old_arg_prop = old_schema[call_name]["properties"]
-      if old_arg_prop.key?(arg_name) and old_arg_prop[arg_name].key?("format") then
-        arg_info["format"] = old_arg_prop[arg_name]["format"]
+      if old_arg_prop.key?(arg_name) then
+        if old_arg_prop[arg_name].key?("format") then
+          arg_info["format"] = old_arg_prop[arg_name]["format"]
+        elsif old_arg_prop[arg_name].key?("items") then
+          arg_info["items"] = old_arg_prop[arg_name]["items"]
+        end
       end
     end
 
