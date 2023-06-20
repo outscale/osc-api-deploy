@@ -46,16 +46,16 @@ components:
           type: string
         CreationDate:
           description: The date and time (UTC) of creation of the access key.
-          format: date-time
+          format: datetime
           type: string
         ExpirationDate:
           description: The date (UTC) at which the access key expires.
-          format: date-time
+          format: datetime
           type: string
         LastModificationDate:
           description: The date and time (UTC) of the last modification of the access
             key.
-          format: date-time
+          format: datetime
           type: string
         State:
           description: The state of the access key (`ACTIVE` if the key is valid for
@@ -71,16 +71,16 @@ components:
           type: string
         CreationDate:
           description: The date and time (UTC) of creation of the access key.
-          format: date-time
+          format: datetime
           type: string
         ExpirationDate:
           description: The date and time (UTC) at which the access key expires.
-          format: date-time
+          format: datetime
           type: string
         LastModificationDate:
           description: The date and time (UTC) of the last modification of the access
             key.
-          format: date-time
+          format: datetime
           type: string
         SecretKey:
           description: The access key that enables you to send requests.
@@ -321,7 +321,7 @@ components:
         LinkDate:
           description: The date and time of attachment of the volume to the VM, in
             ISO 8601 date-time format.
-          format: date-time
+          format: date
           type: string
         State:
           description: The state of the volume.
@@ -519,7 +519,7 @@ components:
           type: string
         FromDate:
           description: The beginning of the time period, in ISO 8601 date-time format.
-          format: date-time
+          format: datetime
           type: string
         Operation:
           description: The API call that triggered the resource consumption (for example,
@@ -541,7 +541,7 @@ components:
           type: string
         ToDate:
           description: The end of the time period, in ISO 8601 date-time format.
-          format: date-time
+          format: datetime
           type: string
         Type:
           description: The type of resource, depending on the API call.
@@ -5020,7 +5020,7 @@ components:
         CreationDate:
           description: The date and time of creation of the OMI, in ISO 8601 date-time
             format.
-          format: date-time
+          format: date
           type: string
         Description:
           description: The description of the OMI.
@@ -5823,7 +5823,7 @@ components:
         QueryDate:
           description: The date and time of the logged call, in ISO 8601 date-time
             format.
-          format: date-time
+          format: date
           type: string
         QueryHeaderRaw:
           description: The raw header of the HTTP request of the logged call.
@@ -8160,7 +8160,7 @@ components:
           type: string
         CreationDate:
           description: The date and time of creation of the snapshot.
-          format: date-time
+          format: datetime
           type: string
         Description:
           description: The description of the snapshot.
@@ -9449,7 +9449,7 @@ components:
           type: integer
         LastStateChangeDate:
           description: The date and time (UTC) of the latest state update.
-          format: date-time
+          format: datetime
           type: string
         OutsideIpAddress:
           description: The IP on the OUTSCALE side of the tunnel.
@@ -9508,7 +9508,7 @@ components:
           type: string
         CreationDate:
           description: The date and time of creation of the VM.
-          format: date-time
+          format: datetime
           type: string
         DeletionProtection:
           description: If true, you cannot delete the VM unless you change this parameter
@@ -9621,7 +9621,7 @@ components:
       properties:
         CreationDate:
           description: The date and time of creation of the VM group.
-          format: date-time
+          format: datetime
           type: string
         Description:
           description: The description of the VM group.
@@ -9802,7 +9802,7 @@ components:
       properties:
         CreationDate:
           description: The date and time of creation of the volume.
-          format: date-time
+          format: datetime
           type: string
         Iops:
           description: |-

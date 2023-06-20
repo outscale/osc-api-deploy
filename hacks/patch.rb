@@ -23,14 +23,15 @@ api["components"]["schemas"].each do |call_name, call|
       arg_info["oneOf"][0].each do |key, val|
         arg_info[key] = val
       end
-      if old_schema.key?(call_name) then
-        old_arg_prop = old_schema[call_name]["properties"]
-        if old_arg_prop.key?(arg_name) then
-          arg_info["format"] = old_arg_prop[arg_name]["format"]
-        end
-      end
       arg_info.delete("oneOf")
     end
+    if old_schema.key?(call_name) then
+      old_arg_prop = old_schema[call_name]["properties"]
+      if old_arg_prop.key?(arg_name) and old_arg_prop[arg_name].key?("format") then
+        arg_info["format"] = old_arg_prop[arg_name]["format"]
+      end
+    end
+
   end
 end
 
