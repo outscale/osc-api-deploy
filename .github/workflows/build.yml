@@ -21,7 +21,7 @@ jobs:
       - name: Write Outscale API version to use
         run: echo "${{ github.event.inputs.api_version }}" > api_version
       - name: check version duplication
-        .github/scripts/release-check-duplicate.sh
+        run: .github/scripts/release-check-duplicate.sh
       - name: auto-generate release
         run: ./build.sh "${{ github.event.inputs.api_version }}"
       - name: push release branch
