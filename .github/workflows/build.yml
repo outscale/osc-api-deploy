@@ -1,0 +1,34 @@
+name: osc-api-deploy release build
+on:
+  workflow_dispatch:
+    inputs:
+      api_version:
+        description: 'Outscale API version'
+        required: true
+
+jobs:
+  auto-build:
+    environment: auto-build
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: main
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+      - name: Write Outscale API version to use
+        run: echo "${{ github.event.inputs.api_version }}" > api_version
+      - name: check version duplication
+        .github/scripts/release-check-duplicate.sh
+      - name: auto-generate release
+        run: ./build.sh "${{ github.event.inputs.api_version }}"
+      - name: push release branch
+        run: make release-push
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: create pull request
+        run: make release-pr
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
