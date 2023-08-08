@@ -22,6 +22,8 @@ jobs:
         run: echo "${{ github.event.inputs.api_version }}" > api_version
       - name: check version duplication
         run: .github/scripts/release-check-duplicate.sh
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - name: auto-generate release
         run: ./build.sh "${{ github.event.inputs.api_version }}"
       - name: push release branch
