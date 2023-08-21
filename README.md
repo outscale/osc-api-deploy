@@ -9,6 +9,8 @@ If you are looking for original Outscale API description in OpenAPI format, plea
 
 # CI description
 
+## description
+
 [osc-api](https://github.com/outscale/oapi-cli) CI is run when a release happen </br>
 It call [release-osc-api](https://github.com/outscale/osc-api/blob/master/.github/workflows/release-osc-api.yml),
 which triger [build workflow in osc-api-deploy](https://github.com/outscale/osc-api-deploy/blob/main/.github/workflows/build.yml),
@@ -18,3 +20,25 @@ osc-api-deploy, will rebuild itself calling scrips in [hacks](https://github.com
 Once this PR is merge, osc-api-deploy, will call build.yml for each SDK, thoses SDKs will use either outscale-java.yaml, hacked outscale.yaml(in osc-api-deploy) or original outscale.yaml in osc-api.
 
 Then one PR will be open for each SDKs.
+
+## schema
+
+```
+ [osc-api repo]        [osc-api-deploy repo]      [SDKs repos]
+       |                        |                      |
+   (release)                    |                      |
+       V                        |                      |
+(release-osc-api.yml)           |                      |
+                      \-->(call build.yml)             |
+                                V                      |
+                       (hack outscale.yaml)            |
+                                V                      |
+                           (open PR)                   |
+                                V                      |
+                            (PR merge)                 V
+                                      \---->(start release CI with hacked yaml)
+                                                       V
+                                               (PR for releases)
+```
+
+
