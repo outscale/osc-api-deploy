@@ -21,6 +21,11 @@ api["components"]["schemas"].each do |call_name, call|
         arg_info[key] = val
       end
       arg_info.delete("oneOf")
+    elsif arg_info.key?("items") and arg_info["items"].key?("oneOf") then
+      arg_info["items"]["oneOf"][0].each do |key, val|
+        arg_info["items"] = val
+      end
+      arg_info["items"].delete("oneOf")
     end
   end
 end
