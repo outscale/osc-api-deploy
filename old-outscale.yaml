@@ -4825,9 +4825,7 @@ components:
         BlockDeviceMappingLinkDates:
           description: The link dates for the BSU volumes mapped to the VMs (for example,
             `2016-01-23T18:45:30.000Z`).
-          items:
-            format: date
-            type: string
+          items: string
           type: array
         BlockDeviceMappingStates:
           description: The states for the BSU volumes (`attaching` \| `attached` \|
@@ -4847,9 +4845,7 @@ components:
           type: array
         CreationDates:
           description: The dates when the VMs were launched.
-          items:
-            format: date
-            type: string
+          items: string
           type: array
         ImageIds:
           description: The IDs of the OMIs used to launch the VMs.
@@ -4906,9 +4902,7 @@ components:
           type: array
         NicLinkNicLinkNicDates:
           description: The dates and time when the NICs were attached to the VMs.
-          items:
-            format: date
-            type: string
+          items: string
           type: array
         NicLinkNicLinkNicIds:
           description: The IDs of the NIC attachments.
@@ -7761,6 +7755,8 @@ components:
           items:
             "$ref": "#/components/schemas/Keypair"
           type: array
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
     ReadLinkedPoliciesFilters:
       additionalProperties: false
       description: One or more filters.
@@ -11220,7 +11216,7 @@ info:
     url: https://opensource.org/licenses/BSD-3-Clause
   termsOfService: https://en.outscale.com/terms-of-service/
   title: 3DS OUTSCALE API
-  version: 1.28.5
+  version: 1.28.6
 openapi: 3.0.0
 paths:
   "/AcceptNetPeering":
