@@ -4967,7 +4967,9 @@ components:
         BlockDeviceMappingLinkDates:
           description: The link dates for the BSU volumes mapped to the VMs (for example,
             `2016-01-23T18:45:30.000Z`).
-          items: string
+          items:
+            format: date
+            type: string
           type: array
         BlockDeviceMappingStates:
           description: The states for the BSU volumes (`attaching` \| `attached` \|
@@ -4987,7 +4989,8 @@ components:
           type: array
         CreationDates:
           description: The dates when the VMs were launched.
-          items: string
+          items:
+            type: string
           type: array
         ImageIds:
           description: The IDs of the OMIs used to launch the VMs.
