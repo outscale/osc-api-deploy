@@ -167,6 +167,37 @@ components:
           description: The ZIP code of the city.
           type: string
       type: object
+    AddUserToUserGroupRequest:
+      additionalProperties: false
+      properties:
+        DryRun:
+          description: If true, checks whether you have the required permissions to
+            perform the action.
+          type: boolean
+        UserGroupName:
+          description: The name of the group you want to add a user to.
+          type: string
+        UserGroupPath:
+          description: The path to the group. If not specified, it is set to a slash
+            (`/`).
+          type: string
+        UserName:
+          description: The name of the user you want to add to the group.
+          type: string
+        UserPath:
+          description: The path to the user. If not specified, it is set to a slash
+            (`/`).
+          type: string
+      required:
+      - UserGroupName
+      - UserName
+      type: object
+    AddUserToUserGroupResponse:
+      additionalProperties: false
+      properties:
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
+      type: object
     ApiAccessPolicy:
       additionalProperties: false
       description: Information about the API access policy.
@@ -187,7 +218,7 @@ components:
       description: Information about the API access rule.
       properties:
         ApiAccessRuleId:
-          description: " The ID of the API access rule."
+          description: The ID of the API access rule.
           type: string
         CaIds:
           description: One or more IDs of Client Certificate Authorities (CAs) used
@@ -224,13 +255,13 @@ components:
       type: object
     BackendVmHealth:
       additionalProperties: false
-      description: Information about the health of a back-end VM.
+      description: Information about the health of a backend VM.
       properties:
         Description:
-          description: The description of the state of the back-end VM.
+          description: The description of the state of the backend VM.
           type: string
         State:
-          description: The state of the back-end VM (`InService` \| `OutOfService`
+          description: The state of the backend VM (`InService` \| `OutOfService`
             \| `Unknown`).
           type: string
         StateReason:
@@ -239,7 +270,7 @@ components:
             Specifically, whether the cause is Elastic Load Balancing or the VM (`ELB` \| `Instance` \| `N/A`).
           type: string
         VmId:
-          description: The ID of the back-end VM.
+          description: The ID of the backend VM.
           type: string
       type: object
     BlockDeviceMappingCreated:
@@ -318,8 +349,8 @@ components:
             false, the volume is not deleted when terminating the VM.
           type: boolean
         LinkDate:
-          description: The date and time of attachment of the volume to the VM, in
-            ISO 8601 date-time format.
+          description: The date and time (UTC) of attachment of the volume to the
+            VM, in ISO 8601 date-time format.
           format: date
           type: string
         State:
@@ -439,7 +470,7 @@ components:
             "$ref": "#/components/schemas/CatalogEntry"
           type: array
         FromDate:
-          description: The beginning of the time period, in ISO 8601 date-time format.
+          description: The beginning of the time period (UTC).
           format: date-time
           type: string
         State:
@@ -449,7 +480,7 @@ components:
           - OBSOLETE
           type: string
         ToDate:
-          description: The end of the time period, in ISO 8601 date-time format.
+          description: The end of the time period (UTC).
           format: date-time
           type: string
       type: object
@@ -517,7 +548,7 @@ components:
           description: The category of the resource (for example, `network`).
           type: string
         FromDate:
-          description: The beginning of the time period, in ISO 8601 date-time format.
+          description: The beginning of the time period (UTC).
           format: datetime
           type: string
         Operation:
@@ -544,7 +575,7 @@ components:
           description: A description of the consumed resource.
           type: string
         ToDate:
-          description: The end of the time period, in ISO 8601 date-time format.
+          description: The end of the time period (UTC).
           format: datetime
           type: string
         Type:
@@ -667,7 +698,7 @@ components:
       additionalProperties: false
       properties:
         CaIds:
-          description: " One or more IDs of Client Certificate Authorities (CAs)."
+          description: One or more IDs of Client Certificate Authorities (CAs).
           items:
             type: string
           type: array
@@ -685,7 +716,7 @@ components:
             perform the action.
           type: boolean
         IpRanges:
-          description: One or more IP addresses or CIDR blocks (for example, `192.0.2.0/16`).
+          description: One or more IPs or CIDR blocks (for example, `192.0.2.0/16`).
           items:
             type: string
           type: array
@@ -1243,6 +1274,9 @@ components:
     CreateNatServiceRequest:
       additionalProperties: false
       properties:
+        ClientToken:
+          description: A unique identifier which enables you to manage the idempotency.
+          type: string
         DryRun:
           description: If true, checks whether you have the required permissions to
             perform the action.
@@ -1429,6 +1463,7 @@ components:
         PolicyOrn:
           description: The OUTSCALE Resource Name (ORN) of the policy. For more information,
             see [Resource Identifiers](https://docs.outscale.com/en/userguide/Resource-Identifiers.html).
+          pattern: "^orn:ows:(iam|idauth):\\S*:\\d{12}:policy/\\S+$"
           type: string
         SetAsDefault:
           description: If set to true, the new policy version is set as the default
@@ -1652,13 +1687,13 @@ components:
       properties:
         Body:
           description: 'The PEM-encoded X509 certificate.<br />With OSC CLI, use the
-            following syntax to make sure your CA file is correctly parsed: `--CaPem=&quot;$(cat
-            FILENAME)&quot;`.'
+            following syntax to make sure your certificate file is correctly parsed:
+            `--Body=&quot;$(cat FILENAME)&quot;`.'
           type: string
         Chain:
           description: 'The PEM-encoded intermediate certification authorities.<br
-            />With OSC CLI, use the following syntax to make sure your CA file is
-            correctly parsed: `--CaPem=&quot;$(cat FILENAME)&quot;`.'
+            />With OSC CLI, use the following syntax to make sure your certificate
+            chain file is correctly parsed: `--Chain=&quot;$(cat FILENAME)&quot;`.'
           type: string
         DryRun:
           description: If true, checks whether you have the required permissions to
@@ -1675,8 +1710,8 @@ components:
           type: string
         PrivateKey:
           description: 'The PEM-encoded private key matching the certificate.<br />With
-            OSC CLI, use the following syntax to make sure your CA file is correctly
-            parsed: `--CaPem=&quot;$(cat FILENAME)&quot;`.'
+            OSC CLI, use the following syntax to make sure your key file is correctly
+            parsed: `--PrivateKey=&quot;$(cat FILENAME)&quot;`.'
           type: string
       required:
       - Body
@@ -1816,6 +1851,31 @@ components:
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
       type: object
+    CreateUserGroupRequest:
+      additionalProperties: false
+      properties:
+        DryRun:
+          description: If true, checks whether you have the required permissions to
+            perform the action.
+          type: boolean
+        Path:
+          description: The path to the group. If not specified, it is set to a slash
+            (`/`).
+          type: string
+        UserGroupName:
+          description: The name of the group.
+          type: string
+      required:
+      - UserGroupName
+      type: object
+    CreateUserGroupResponse:
+      additionalProperties: false
+      properties:
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
+        UserGroup:
+          "$ref": "#/components/schemas/UserGroup"
+      type: object
     CreateUserRequest:
       additionalProperties: false
       properties:
@@ -1825,14 +1885,14 @@ components:
           type: boolean
         Path:
           description: The path to the EIM user you want to create (by default, `/`).
-            This path name must begin and end with a slash (/), and contain between
-            1 and 512 alphanumeric characters and/or slashes (/), or underscores (_).
+            This path name must begin and end with a slash (`/`), and contain between
+            1 and 512 alphanumeric characters and/or slashes (`/`), or underscores
+            (_).
           type: string
         UserName:
-          description: The name of the EIM user you want to create. This user name
-            must contain between 1 and 64 alphanumeric characters and/or pluses (+),
-            equals (=), commas (,), periods (.), at signs (@), dashes (-), or underscores
-            (_).
+          description: The name of the EIM user. This user name must contain between
+            1 and 64 alphanumeric characters and/or pluses (+), equals (=), commas
+            (,), periods (.), at signs (@), dashes (-), or underscores (_).
           type: string
       required:
       - UserName
@@ -1938,7 +1998,7 @@ components:
           type: string
         CpuPerformance:
           default: high
-          description: 'The performance of the VMs (`medium` \| `high` \|  `highest`). '
+          description: The performance of the VMs (`medium` \| `high` \|  `highest`).
           enum:
           - medium
           - high
@@ -2115,9 +2175,9 @@ components:
             ratio of 300 IOPS per gibibyte.
           type: integer
         Size:
-          description: 'The size of the volume, in gibibytes (GiB). The maximum allowed
+          description: The size of the volume, in gibibytes (GiB). The maximum allowed
             size for a volume is 14901 GiB. This parameter is required if the volume
-            is not created from a snapshot (`SnapshotId` unspecified). '
+            is not created from a snapshot (`SnapshotId` unspecified).
           type: integer
         SnapshotId:
           description: The ID of the snapshot from which you want to create the volume.
@@ -2711,6 +2771,7 @@ components:
         PolicyOrn:
           description: The OUTSCALE Resource Name (ORN) of the policy you want to
             delete. For more information, see [Resource Identifiers](https://docs.outscale.com/en/userguide/Resource-Identifiers.html).
+          pattern: "^orn:ows:(iam|idauth):\\S*:\\d{12}:policy/\\S+$"
           type: string
       required:
       - PolicyOrn
@@ -2727,6 +2788,7 @@ components:
         PolicyOrn:
           description: The OUTSCALE Resource Name (ORN) of the policy. For more information,
             see [Resource Identifiers](https://docs.outscale.com/en/userguide/Resource-Identifiers.html).
+          pattern: "^orn:ows:(iam|idauth):\\S*:\\d{12}:policy/\\S+$"
           type: string
         VersionId:
           description: The ID of the version of the policy you want to delete.
@@ -2967,6 +3029,60 @@ components:
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
       type: object
+    DeleteUserGroupPolicyRequest:
+      additionalProperties: false
+      properties:
+        DryRun:
+          description: If true, checks whether you have the required permissions to
+            perform the action.
+          type: boolean
+        PolicyName:
+          description: The name of the policy document you want to delete.
+          type: string
+        UserGroupName:
+          description: The name of the group.
+          type: string
+        UserGroupPath:
+          description: The path to the group. If not specified, it is set to a slash
+            (`/`).
+          type: string
+      required:
+      - UserGroupName
+      - PolicyName
+      type: object
+    DeleteUserGroupPolicyResponse:
+      additionalProperties: false
+      properties:
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
+      type: object
+    DeleteUserGroupRequest:
+      additionalProperties: false
+      properties:
+        DryRun:
+          description: If true, checks whether you have the required permissions to
+            perform the action.
+          type: boolean
+        Force:
+          description: If true, forces the deletion of the user group even if it is
+            not empty.
+          type: boolean
+        Path:
+          description: The path to the group. If not specified, it is set to a slash
+            (`/`).
+          type: string
+        UserGroupName:
+          description: The name of the group you want to delete.
+          type: string
+      required:
+      - UserGroupName
+      type: object
+    DeleteUserGroupResponse:
+      additionalProperties: false
+      properties:
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
+      type: object
     DeleteUserRequest:
       additionalProperties: false
       properties:
@@ -3032,7 +3148,7 @@ components:
             perform the action.
           type: boolean
         VmTemplateId:
-          description: 'The ID of the VM template you want to delete. '
+          description: The ID of the VM template you want to delete.
           type: string
       required:
       - VmTemplateId
@@ -3136,7 +3252,7 @@ components:
       additionalProperties: false
       properties:
         BackendVmIds:
-          description: One or more IDs of back-end VMs.
+          description: One or more IDs of backend VMs.
           items:
             type: string
           type: array
@@ -3324,13 +3440,15 @@ components:
       description: Information about the errors.
       properties:
         Code:
-          description: The code of the error.
+          description: The code of the error (for example, `4078`). You can search
+            for this returned code in the [errors page](api-errors.html) to find more
+            details about the error.
           type: string
         Details:
-          description: The details of the error.
+          description: A description providing more details about the error.
           type: string
         Type:
-          description: The type of the error.
+          description: The type of the error (for example, `InvalidParameterValue`).
           type: string
       type: object
     FiltersAccessKeys:
@@ -3373,7 +3491,7 @@ components:
             type: string
           type: array
         IpRanges:
-          description: One or more IP addresses or CIDR blocks (for example, `192.0.2.0/16`).
+          description: One or more IPs or CIDR blocks (for example, `192.0.2.0/16`).
           items:
             type: string
           type: array
@@ -3886,6 +4004,11 @@ components:
       additionalProperties: false
       description: One or more filters.
       properties:
+        ClientTokens:
+          description: The idempotency tokens provided when creating the NAT services.
+          items:
+            type: string
+          type: array
         NatServiceIds:
           description: The IDs of the NAT services.
           items:
@@ -4138,6 +4261,11 @@ components:
         LinkPublicIpLinkPublicIpIds:
           description: The association IDs returned when the public IPs were associated
             with the NICs.
+          items:
+            type: string
+          type: array
+        LinkPublicIpPublicDnsNames:
+          description: The public DNS names associated with the public IPs.
           items:
             type: string
           type: array
@@ -4612,7 +4740,8 @@ components:
             type: string
           type: array
         States:
-          description: The states of the snapshots (`in-queue` \| `completed` \| `error`).
+          description: The states of the snapshots (`in-queue` \| `pending` \| `completed`
+            \| `error` \| `deleting`).
           items:
             type: string
           type: array
@@ -4755,6 +4884,20 @@ components:
             type: string
           type: array
       type: object
+    FiltersUserGroup:
+      additionalProperties: false
+      description: One or more filters.
+      properties:
+        PathPrefix:
+          description: The path prefix of the groups. If not specified, it is set
+            to a slash (`/`).
+          type: string
+        UserGroupIds:
+          description: The IDs of the user groups.
+          items:
+            type: string
+          type: array
+      type: object
     FiltersVirtualGateway:
       additionalProperties: false
       description: One or more filters.
@@ -4824,9 +4967,7 @@ components:
         BlockDeviceMappingLinkDates:
           description: The link dates for the BSU volumes mapped to the VMs (for example,
             `2016-01-23T18:45:30.000Z`).
-          items:
-            format: date
-            type: string
+          items: string
           type: array
         BlockDeviceMappingStates:
           description: The states for the BSU volumes (`attaching` \| `attached` \|
@@ -4846,9 +4987,7 @@ components:
           type: array
         CreationDates:
           description: The dates when the VMs were launched.
-          items:
-            format: date
-            type: string
+          items: string
           type: array
         ImageIds:
           description: The IDs of the OMIs used to launch the VMs.
@@ -4904,10 +5043,9 @@ components:
             type: integer
           type: array
         NicLinkNicLinkNicDates:
-          description: The dates and time when the NICs were attached to the VMs.
-          items:
-            format: date
-            type: string
+          description: The dates and times (UTC) when the NICs were attached to the
+            VMs.
+          items: string
           type: array
         NicLinkNicLinkNicIds:
           description: The IDs of the NIC attachments.
@@ -5204,7 +5342,6 @@ components:
       type: object
     FiltersVmTemplate:
       additionalProperties: false
-      description: One or more filters.
       properties:
         CpuCores:
           description: The number of vCores.
@@ -5333,13 +5470,13 @@ components:
             type: string
           type: array
         MaintenanceEventsNotAfter:
-          description: The latest time the event can end.
+          description: The latest date and time (UTC) the event can end.
           items:
             format: date
             type: string
           type: array
         MaintenanceEventsNotBefore:
-          description: The earliest time the event can start.
+          description: The earliest date and time (UTC) the event can start.
           items:
             format: date
             type: string
@@ -5621,8 +5758,7 @@ components:
             "$ref": "#/components/schemas/BlockDeviceMappingImage"
           type: array
         CreationDate:
-          description: The date and time of creation of the OMI, in ISO 8601 date-time
-            format.
+          description: The date and time (UTC) of creation of the OMI.
           format: date
           type: string
         Description:
@@ -5690,6 +5826,18 @@ components:
           type: array
         TaskId:
           description: The ID of the OMI export task.
+          type: string
+      type: object
+    InlinePolicy:
+      additionalProperties: false
+      description: Information about an inline policy.
+      properties:
+        Body:
+          description: The policy document, corresponding to a JSON string that contains
+            the policy. For more information, see [EIM Reference Information](https://docs.outscale.com/en/userguide/EIM-Reference-Information.html).
+          type: string
+        Name:
+          description: The name of the policy.
           type: string
       type: object
     InternetService:
@@ -5800,26 +5948,50 @@ components:
       additionalProperties: false
       properties:
         BackendIps:
-          description: " One or more public IPs of back-end VMs."
+          description: One or more public IPs of backend VMs.
           items:
             type: string
           type: array
         BackendVmIds:
-          description: " One or more IDs of back-end VMs."
+          description: One or more IDs of backend VMs.
           items:
             type: string
           type: array
         DryRun:
-          description: " If true, checks whether you have the required permissions
-            to perform the action."
+          description: If true, checks whether you have the required permissions to
+            perform the action.
           type: boolean
         LoadBalancerName:
-          description: " The name of the load balancer. "
+          description: The name of the load balancer.
           type: string
       required:
       - LoadBalancerName
       type: object
     LinkLoadBalancerBackendMachinesResponse:
+      additionalProperties: false
+      properties:
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
+      type: object
+    LinkManagedPolicyToUserGroupRequest:
+      additionalProperties: false
+      properties:
+        DryRun:
+          description: If true, checks whether you have the required permissions to
+            perform the action.
+          type: boolean
+        PolicyOrn:
+          description: The OUTSCALE Resource Name (ORN) of the policy. For more information,
+            see [Resource Identifiers](https://docs.outscale.com/en/userguide/Resource-Identifiers.html).
+          type: string
+        UserGroupName:
+          description: The name of the group you want to link the policy to.
+          type: string
+      required:
+      - PolicyOrn
+      - UserGroupName
+      type: object
+    LinkManagedPolicyToUserGroupResponse:
       additionalProperties: false
       properties:
         ResponseContext:
@@ -5923,6 +6095,7 @@ components:
         PolicyOrn:
           description: The OUTSCALE Resource Name (ORN) of the policy. For more information,
             see [Resource Identifiers](https://docs.outscale.com/en/userguide/Resource-Identifiers.html).
+          pattern: "^orn:ows:(iam|idauth):\\S*:\\d{12}:policy/\\S+$"
           type: string
         UserName:
           description: The name of the user you want to link the policy to (between
@@ -6059,19 +6232,22 @@ components:
       description: One or more associations between the route table and the Subnets.
       properties:
         LinkRouteTableId:
-          description: The ID of the association between the route table and the Subnet.
+          description: The ID of the association between the route table and the Net
+            or Subnet.
           type: string
         Main:
           description: If true, the route table is the main one.
           type: boolean
         NetId:
-          description: The ID of the Net.
+          description: The ID of the Net, if the route table is not explicitly linked
+            to a Subnet.
           type: string
         RouteTableId:
           description: The ID of the route table.
           type: string
         SubnetId:
-          description: The ID of the Subnet.
+          description: The ID of the Subnet, if the route table is explicitly linked
+            to a Subnet.
           type: string
       type: object
     LinkRouteTableRequest:
@@ -6157,18 +6333,19 @@ components:
       type: object
     LinkedPolicy:
       additionalProperties: false
-      description: Information about the attached policy.
+      description: Information about the linked policy.
       properties:
         CreationDate:
-          description: The date and time of creation of the attached policy.
+          description: The date and time (UTC) of creation of the linked policy.
           format: date-time
           type: string
         LastModificationDate:
-          description: The date and time at which the attached policy was last modified.
+          description: The date and time (UTC) at which the linked policy was last
+            modified.
           format: date-time
           type: string
         Orn:
-          description: The Outscale Resource Name (ORN) of the policy. For more information,
+          description: The OUTSCALE Resource Name (ORN) of the policy. For more information,
             see [Resource Identifiers](https://docs.outscale.com/en/userguide/Resource-Identifiers.html).
           type: string
         PolicyId:
@@ -6205,11 +6382,11 @@ components:
       description: Information about the listener.
       properties:
         BackendPort:
-          description: The port on which the back-end VM is listening (between `1`
+          description: The port on which the backend VM is listening (between `1`
             and `65535`, both included).
           type: integer
         BackendProtocol:
-          description: The protocol for routing traffic to back-end VMs (`HTTP` \|
+          description: The protocol for routing traffic to backend VMs (`HTTP` \|
             `HTTPS` \| `TCP` \| `SSL`).
           type: string
         LoadBalancerPort:
@@ -6236,11 +6413,11 @@ components:
       description: Information about the listener to create.
       properties:
         BackendPort:
-          description: The port on which the back-end VM is listening (between `1`
+          description: The port on which the backend VM is listening (between `1`
             and `65535`, both included).
           type: integer
         BackendProtocol:
-          description: The protocol for routing traffic to back-end VMs (`HTTP` \|
+          description: The protocol for routing traffic to backend VMs (`HTTP` \|
             `HTTPS` \| `TCP` \| `SSL`).
           type: string
         LoadBalancerPort:
@@ -6305,9 +6482,9 @@ components:
           description: The type of action for the rule (always `forward`).
           type: string
         HostNamePattern:
-          description: 'A host-name pattern for the rule, with a maximum length of
+          description: A host-name pattern for the rule, with a maximum length of
             128 characters. This host-name pattern supports maximum three wildcards,
-            and must not contain any special characters except [-.?]. '
+            and must not contain any special characters except [-.?].
           type: string
         ListenerRuleName:
           description: A human-readable name for the listener rule.
@@ -6338,12 +6515,12 @@ components:
             "$ref": "#/components/schemas/ApplicationStickyCookiePolicy"
           type: array
         BackendIps:
-          description: One or more public IPs of back-end VMs.
+          description: One or more public IPs of backend VMs.
           items:
             type: string
           type: array
         BackendVmIds:
-          description: One or more IDs of back-end VMs for the load balancer.
+          description: One or more IDs of backend VMs for the load balancer.
           items:
             type: string
           type: array
@@ -6484,8 +6661,7 @@ components:
           description: The name of the logged call.
           type: string
         QueryDate:
-          description: The date and time of the logged call, in ISO 8601 date-time
-            format.
+          description: The date and time (UTC) of the logged call.
           format: date
           type: string
         QueryHeaderRaw:
@@ -6529,11 +6705,11 @@ components:
           description: The description of the event.
           type: string
         NotAfter:
-          description: The latest scheduled end time for the event.
+          description: The latest scheduled end date and time (UTC) for the event.
           format: date
           type: string
         NotBefore:
-          description: The earliest scheduled start time for the event.
+          description: The earliest scheduled start date and time (UTC) for the event.
           format: date
           type: string
       type: object
@@ -6541,6 +6717,9 @@ components:
       additionalProperties: false
       description: Information about the NAT service.
       properties:
+        ClientToken:
+          description: The idempotency token provided when creating the NAT service.
+          type: string
         NatServiceId:
           description: The ID of the NAT service.
           type: string
@@ -6628,7 +6807,7 @@ components:
         AccepterNet:
           "$ref": "#/components/schemas/AccepterNet"
         ExpirationDate:
-          description: The date and time at which the Net peerings expire.
+          description: The date and time (UTC) at which the Net peerings expire.
           format: date-time
           nullable: true
           type: string
@@ -6925,8 +7104,8 @@ components:
       type: object
     Phase1Options:
       additionalProperties: false
-      description: 'Information about Phase 1 of the Internet Key Exchange (IKE) negotiation.
-        When Phase 1 finishes successfully, peers proceed to Phase 2 negotiations. '
+      description: Information about Phase 1 of the Internet Key Exchange (IKE) negotiation.
+        When Phase 1 finishes successfully, peers proceed to Phase 2 negotiations.
       properties:
         DpdTimeoutAction:
           description: The action to carry out after a Dead Peer Detection (DPD) timeout
@@ -6974,7 +7153,7 @@ components:
       type: object
     Phase2Options:
       additionalProperties: false
-      description: 'Information about Phase 2 of the Internet Key Exchange (IKE) negotiation. '
+      description: Information about Phase 2 of the Internet Key Exchange (IKE) negotiation.
       properties:
         Phase2DhGroupNumbers:
           description: The Diffie-Hellman (DH) group numbers allowed for the VPN tunnel
@@ -7004,16 +7183,6 @@ components:
             any character except line breaks and double quotes (&quot;).
           type: string
       type: object
-    Phase2OptionsToUpdate:
-      additionalProperties: false
-      description: 'Information about Phase 2 of the Internet Key Exchange (IKE) negotiation. '
-      properties:
-        PreSharedKey:
-          description: The pre-shared key to establish the initial authentication
-            between the client gateway and the virtual gateway. This key can contain
-            any character except line breaks and double quotes (&quot;).
-          type: string
-      type: object
     Placement:
       additionalProperties: false
       description: Information about the placement of the VM.
@@ -7032,7 +7201,7 @@ components:
       description: Information about the policy.
       properties:
         CreationDate:
-          description: The date and time of creation of the policy.
+          description: The date and time (UTC) of creation of the policy.
           format: date-time
           type: string
         Description:
@@ -7043,7 +7212,7 @@ components:
             EIM user.
           type: boolean
         LastModificationDate:
-          description: The date and time at which the policy was last modified.
+          description: The date and time (UTC) at which the policy was last modified.
           format: date-time
           type: string
         Orn:
@@ -7071,10 +7240,11 @@ components:
       description: Information about the policy version.
       properties:
         Body:
-          description: The policy document as a json string.
+          description: The policy document, corresponding to a JSON string that contains
+            the policy. For more information, see [EIM Reference Information](https://docs.outscale.com/en/userguide/EIM-Reference-Information.html).
           type: string
         CreationDate:
-          description: The date and time of creation of the version.
+          description: The date and time (UTC) of creation of the version.
           format: date-time
           type: string
         DefaultVersion:
@@ -7184,6 +7354,38 @@ components:
           description: The allocation ID of the public IP associated with the NAT
             service.
           type: string
+      type: object
+    PutUserGroupPolicyRequest:
+      additionalProperties: false
+      properties:
+        DryRun:
+          description: If true, checks whether you have the required permissions to
+            perform the action.
+          type: boolean
+        PolicyDocument:
+          description: The policy document, corresponding to a JSON string that contains
+            the policy. For more information, see [EIM Reference Information](https://docs.outscale.com/en/userguide/EIM-Reference-Information.html).
+          type: string
+        PolicyName:
+          description: The name of the policy.
+          type: string
+        UserGroupName:
+          description: The name of the group.
+          type: string
+        UserGroupPath:
+          description: The path to the group. If not specified, it is set to a slash
+            (`/`).
+          type: string
+      required:
+      - PolicyName
+      - PolicyDocument
+      - UserGroupName
+      type: object
+    PutUserGroupPolicyResponse:
+      additionalProperties: false
+      properties:
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
       type: object
     Quota:
       additionalProperties: false
@@ -7408,7 +7610,6 @@ components:
       type: object
     ReadCatalogsRequest:
       additionalProperties: false
-      description: ReadCatalogsRequest
       properties:
         DryRun:
           description: If true, checks whether you have the required permissions to
@@ -7419,7 +7620,6 @@ components:
       type: object
     ReadCatalogsResponse:
       additionalProperties: false
-      description: ReadCatalogsResponse
       properties:
         Catalogs:
           description: Information about one or more catalogs.
@@ -7438,6 +7638,15 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersClientGateway"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadClientGatewaysResponse:
       additionalProperties: false
@@ -7447,6 +7656,11 @@ components:
           items:
             "$ref": "#/components/schemas/ClientGateway"
           type: array
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
       type: object
@@ -7487,6 +7701,7 @@ components:
           description: The beginning of the time period, in ISO 8601 date format (for
             example, `2020-06-14`). The date-time format is also accepted, but only
             with a time set to midnight (for example, `2020-06-14T00:00:00.000Z`).
+            This value is included in the time period.
           format: datetime
           type: string
         Overall:
@@ -7500,12 +7715,14 @@ components:
         ShowPrice:
           description: If true, the response also includes the unit price of the consumed
             resource (`UnitPrice`) and the total price of the consumed resource during
-            the specified time period (`Price`), in the currency of the Region's catalog.
+            the specified time period (`Price`), in the currency of your account.
           type: boolean
         ToDate:
           description: The end of the time period, in ISO 8601 date format (for example,
             `2020-06-30`). The date-time format is also accepted, but only with a
-            time set to midnight (for example, `2020-06-30T00:00:00.000Z`).
+            time set to midnight (for example, `2020-06-30T00:00:00.000Z`). This value
+            is excluded from the time period, and must be set to a later date than
+            `FromDate`.
           format: datetime
           type: string
       required:
@@ -7521,6 +7738,11 @@ components:
           items:
             "$ref": "#/components/schemas/ConsumptionEntry"
           type: array
+        Currency:
+          description: The currency of your account for the `UnitPrice` and `Price`
+            parameters, in the ISO-4217 format (for example, `EUR`).
+          nullable: true
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
       type: object
@@ -7533,6 +7755,15 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersDedicatedGroup"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadDedicatedGroupsResponse:
       additionalProperties: false
@@ -7542,6 +7773,11 @@ components:
           items:
             "$ref": "#/components/schemas/DedicatedGroup"
           type: array
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
       type: object
@@ -7589,6 +7825,15 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersDirectLinkInterface"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadDirectLinkInterfacesResponse:
       additionalProperties: false
@@ -7598,6 +7843,11 @@ components:
           items:
             "$ref": "#/components/schemas/DirectLinkInterfaces"
           type: array
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
       type: object
@@ -7610,6 +7860,15 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersDirectLink"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadDirectLinksResponse:
       additionalProperties: false
@@ -7619,6 +7878,11 @@ components:
           items:
             "$ref": "#/components/schemas/DirectLink"
           type: array
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
       type: object
@@ -7672,6 +7936,15 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersExportTask"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadImageExportTasksResponse:
       additionalProperties: false
@@ -7681,6 +7954,11 @@ components:
           items:
             "$ref": "#/components/schemas/ImageExportTask"
           type: array
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
       type: object
@@ -7728,6 +8006,15 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersInternetService"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadInternetServicesResponse:
       additionalProperties: false
@@ -7737,6 +8024,11 @@ components:
           items:
             "$ref": "#/components/schemas/InternetService"
           type: array
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
       type: object
@@ -7749,6 +8041,15 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersKeypair"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadKeypairsResponse:
       additionalProperties: false
@@ -7758,14 +8059,21 @@ components:
           items:
             "$ref": "#/components/schemas/Keypair"
           type: array
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
+      type: object
     ReadLinkedPoliciesFilters:
       additionalProperties: false
       description: One or more filters.
       properties:
         PathPrefix:
-          description: The path prefix of the policies, set to a slash (`/`) by default.
+          description: The path prefix of the policies. If not specified, it is set
+            to a slash (`/`).
           type: string
       type: object
     ReadLinkedPoliciesRequest:
@@ -7782,11 +8090,13 @@ components:
           type: integer
         ResultsPerPage:
           description: The maximum number of items that can be returned in a single
-            response (by default, 100).
+            response (by default, `100`).
           type: integer
         UserName:
           description: The name of the user the policies are linked to.
           type: string
+      required:
+      - UserName
       type: object
     ReadLinkedPoliciesResponse:
       additionalProperties: false
@@ -7885,6 +8195,15 @@ components:
           description: If true, checks whether you have the required permissions to
             perform the action.
           type: boolean
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadLocationsResponse:
       additionalProperties: false
@@ -7893,6 +8212,55 @@ components:
           description: Information about one or more locations.
           items:
             "$ref": "#/components/schemas/Location"
+          type: array
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
+      type: object
+    ReadManagedPoliciesLinkedToUserGroupRequest:
+      additionalProperties: false
+      properties:
+        DryRun:
+          description: If true, checks whether you have the required permissions to
+            perform the action.
+          type: boolean
+        Filters:
+          "$ref": "#/components/schemas/FiltersUserGroup"
+        FirstItem:
+          description: The item starting the list of policies requested.
+          type: integer
+        ResultsPerPage:
+          description: The maximum number of items that can be returned in a single
+            response (by default, `100`).
+          type: integer
+        UserGroupName:
+          description: The name of the group.
+          type: string
+      required:
+      - UserGroupName
+      type: object
+    ReadManagedPoliciesLinkedToUserGroupResponse:
+      additionalProperties: false
+      properties:
+        HasMoreItems:
+          description: If true, there are more items to return using the `FirstItem`
+            parameter in a new request.
+          type: boolean
+        MaxResultsLimit:
+          description: Indicates maximum results defined for the operation.
+          type: integer
+        MaxResultsTruncated:
+          description: If true, indicates whether requested page size is more than
+            allowed.
+          type: boolean
+        Policies:
+          description: A list of policies.
+          items:
+            "$ref": "#/components/schemas/LinkedPolicy"
           type: array
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
@@ -7941,10 +8309,24 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersService"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadNetAccessPointServicesResponse:
       additionalProperties: false
       properties:
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
         Services:
@@ -8032,6 +8414,15 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersNet"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadNetsResponse:
       additionalProperties: false
@@ -8041,6 +8432,11 @@ components:
           items:
             "$ref": "#/components/schemas/Net"
           type: array
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
       type: object
@@ -8073,8 +8469,8 @@ components:
           description: If set to true, lists only the policies attached to a user.
           type: boolean
         PathPrefix:
-          description: The path prefix you can use to filter the results, set to a
-            slash (`/`) by default.
+          description: The path prefix you can use to filter the results. If not specified,
+            it is set to a slash (`/`).
           type: string
         Scope:
           description: The scope to filter policies (`OWS` \| `LOCAL`).
@@ -8097,7 +8493,7 @@ components:
           type: integer
         ResultsPerPage:
           description: The maximum number of items that can be returned in a single
-            response (by default, 100).
+            response (by default, `100`).
           type: integer
       type: object
     ReadPoliciesResponse:
@@ -8128,6 +8524,7 @@ components:
         PolicyOrn:
           description: The OUTSCALE Resource Name (ORN) of the policy. For more information,
             see [Resource Identifiers](https://docs.outscale.com/en/userguide/Resource-Identifiers.html).
+          pattern: "^orn:ows:(iam|idauth):\\S*:\\d{12}:policy/\\S+$"
           type: string
       required:
       - PolicyOrn
@@ -8146,6 +8543,7 @@ components:
         PolicyOrn:
           description: The OUTSCALE Resource Name (ORN) of the policy. For more information,
             see [Resource Identifiers](https://docs.outscale.com/en/userguide/Resource-Identifiers.html).
+          pattern: "^orn:ows:(iam|idauth):\\S*:\\d{12}:policy/\\S+$"
           type: string
         VersionId:
           description: The ID of the policy version.
@@ -8171,10 +8569,11 @@ components:
         PolicyOrn:
           description: The OUTSCALE Resource Name (ORN) of the policy. For more information,
             see [Resource Identifiers](https://docs.outscale.com/en/userguide/Resource-Identifiers.html).
+          pattern: "^orn:ows:(iam|idauth):\\S*:\\d{12}:policy/\\S+$"
           type: string
         ResultsPerPage:
           description: The maximum number of items that can be returned in a single
-            response (by default, 100).
+            response (by default, `100`).
           type: integer
       required:
       - PolicyOrn
@@ -8206,10 +8605,24 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersProductType"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadProductTypesResponse:
       additionalProperties: false
       properties:
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ProductTypes:
           description: Information about one or more product types.
           items:
@@ -8241,10 +8654,24 @@ components:
           description: If true, checks whether you have the required permissions to
             perform the action.
           type: boolean
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadPublicIpRangesResponse:
       additionalProperties: false
       properties:
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         PublicIps:
           description: The list of public IPv4 addresses used in the Region, in CIDR
             notation.
@@ -8298,10 +8725,24 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersQuota"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadQuotasResponse:
       additionalProperties: false
       properties:
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         QuotaTypes:
           description: Information about one or more quotas.
           items:
@@ -8394,10 +8835,24 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersSecurityGroup"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadSecurityGroupsResponse:
       additionalProperties: false
       properties:
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
         SecurityGroups:
@@ -8436,10 +8891,24 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersExportTask"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadSnapshotExportTasksResponse:
       additionalProperties: false
       properties:
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
         SnapshotExportTasks:
@@ -8457,10 +8926,24 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersSnapshot"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadSnapshotsResponse:
       additionalProperties: false
       properties:
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
         Snapshots:
@@ -8478,10 +8961,24 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersSubnet"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadSubnetsResponse:
       additionalProperties: false
       properties:
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
         Subnets:
@@ -8499,10 +8996,24 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersSubregion"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadSubregionsResponse:
       additionalProperties: false
       properties:
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
         Subregions:
@@ -8520,16 +9031,201 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersTag"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadTagsResponse:
       additionalProperties: false
       properties:
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
         Tags:
           description: Information about one or more tags.
           items:
             "$ref": "#/components/schemas/Tag"
+          type: array
+      type: object
+    ReadUserGroupPoliciesRequest:
+      additionalProperties: false
+      properties:
+        DryRun:
+          description: If true, checks whether you have the required permissions to
+            perform the action.
+          type: boolean
+        FirstItem:
+          description: The item starting the list of policies requested.
+          type: integer
+        ResultsPerPage:
+          description: The maximum number of items that can be returned in a single
+            response (by default, `100`).
+          type: integer
+        UserGroupName:
+          description: The name of the group.
+          type: string
+        UserGroupPath:
+          description: The path to the group. If not specified, it is set to a slash
+            (`/`).
+          type: string
+      required:
+      - UserGroupName
+      type: object
+    ReadUserGroupPoliciesResponse:
+      additionalProperties: false
+      properties:
+        HasMoreItems:
+          description: If true, there are more items to return using the `FirstItem`
+            parameter in a new request.
+          type: boolean
+        MaxResultsLimit:
+          description: Indicates maximum results defined for the operation.
+          type: integer
+        MaxResultsTruncated:
+          description: If true, indicates whether requested page size is more than
+            allowed.
+          type: boolean
+        Policies:
+          description: A list of policies.
+          items:
+            "$ref": "#/components/schemas/InlinePolicy"
+          type: array
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
+      type: object
+    ReadUserGroupPolicyRequest:
+      additionalProperties: false
+      properties:
+        DryRun:
+          description: If true, checks whether you have the required permissions to
+            perform the action.
+          type: boolean
+        PolicyName:
+          description: The name of the policy.
+          type: string
+        UserGroupName:
+          description: The name of the group.
+          type: string
+        UserGroupPath:
+          description: The path to the group. If not specified, it is set to a slash
+            (`/`).
+          type: string
+      required:
+      - PolicyName
+      - UserGroupName
+      type: object
+    ReadUserGroupPolicyResponse:
+      additionalProperties: false
+      properties:
+        Policy:
+          "$ref": "#/components/schemas/InlinePolicy"
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
+      type: object
+    ReadUserGroupRequest:
+      additionalProperties: false
+      properties:
+        DryRun:
+          description: If true, checks whether you have the required permissions to
+            perform the action.
+          type: boolean
+        Path:
+          description: The path to the group. If not specified, it is set to a slash
+            (`/`).
+          type: string
+        UserGroupName:
+          description: The name of the group.
+          type: string
+      required:
+      - UserGroupName
+      type: object
+    ReadUserGroupResponse:
+      additionalProperties: false
+      properties:
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
+        UserGroup:
+          "$ref": "#/components/schemas/UserGroup"
+        Users:
+          description: A list of EIM users.
+          items:
+            "$ref": "#/components/schemas/User"
+          type: array
+      type: object
+    ReadUserGroupsPerUserRequest:
+      additionalProperties: false
+      properties:
+        DryRun:
+          description: If true, checks whether you have the required permissions to
+            perform the action.
+          type: boolean
+        UserName:
+          description: The name of the user.
+          type: string
+        UserPath:
+          description: The path to the user (by default, `/`).
+          type: string
+      required:
+      - UserName
+      type: object
+    ReadUserGroupsPerUserResponse:
+      additionalProperties: false
+      properties:
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
+        UserGroups:
+          description: A list of user groups.
+          items:
+            "$ref": "#/components/schemas/UserGroup"
+          type: array
+      type: object
+    ReadUserGroupsRequest:
+      additionalProperties: false
+      properties:
+        DryRun:
+          description: If true, checks whether you have the required permissions to
+            perform the action.
+          type: boolean
+        Filters:
+          "$ref": "#/components/schemas/FiltersUserGroup"
+        FirstItem:
+          description: The item starting the list of groups requested.
+          type: integer
+        ResultsPerPage:
+          description: The maximum number of items that can be returned in a single
+            response (by default, `100`).
+          type: integer
+      type: object
+    ReadUserGroupsResponse:
+      additionalProperties: false
+      properties:
+        HasMoreItems:
+          description: If true, there are more items to return using the `FirstItem`
+            parameter in a new request.
+          type: boolean
+        MaxResultsLimit:
+          description: Indicates maximum results defined for the operation.
+          type: integer
+        MaxResultsTruncated:
+          description: If true, indicates whether requested page size is more than
+            allowed.
+          type: boolean
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
+        UserGroups:
+          description: A list of user groups.
+          items:
+            "$ref": "#/components/schemas/UserGroup"
           type: array
       type: object
     ReadUsersRequest:
@@ -8602,7 +9298,6 @@ components:
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
         VmGroups:
-          description: Information about one or more VM groups.
           items:
             "$ref": "#/components/schemas/VmGroup"
           type: array
@@ -8637,10 +9332,24 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersVmType"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadVmTypesResponse:
       additionalProperties: false
       properties:
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
         VmTypes:
@@ -8653,7 +9362,7 @@ components:
       additionalProperties: false
       properties:
         BackendVmIds:
-          description: One or more IDs of back-end VMs.
+          description: One or more IDs of backend VMs.
           items:
             type: string
           type: array
@@ -8671,7 +9380,7 @@ components:
       additionalProperties: false
       properties:
         BackendVmHealth:
-          description: Information about the health of one or more back-end VMs.
+          description: Information about the health of one or more backend VMs.
           items:
             "$ref": "#/components/schemas/BackendVmHealth"
           type: array
@@ -8727,10 +9436,24 @@ components:
           type: boolean
         Filters:
           "$ref": "#/components/schemas/FiltersVmsState"
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
+        ResultsPerPage:
+          description: The maximum number of logs returned in a single response (between
+            `1`and `1000`, both included). By default, `100`.
+          type: integer
       type: object
     ReadVmsStateResponse:
       additionalProperties: false
       properties:
+        NextPageToken:
+          description: The token to request the next page of results. Each token refers
+            to a specific page.
+          format: byte
+          type: string
         ResponseContext:
           "$ref": "#/components/schemas/ResponseContext"
         VmStates:
@@ -8846,8 +9569,8 @@ components:
       properties:
         BackendVmIds:
           description: |-
-            One or more IDs of back-end VMs.<br />
-            Specifying the same ID several times has no effect as each back-end VM has equal weight.
+            One or more IDs of backend VMs.<br />
+            Specifying the same ID several times has no effect as each backend VM has equal weight.
           items:
             type: string
           type: array
@@ -8882,6 +9605,36 @@ components:
       - NetPeeringId
       type: object
     RejectNetPeeringResponse:
+      additionalProperties: false
+      properties:
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
+      type: object
+    RemoveUserFromUserGroupRequest:
+      additionalProperties: false
+      properties:
+        DryRun:
+          description: If true, checks whether you have the required permissions to
+            perform the action.
+          type: boolean
+        UserGroupName:
+          description: The name of the group you want to remove the user from.
+          type: string
+        UserGroupPath:
+          description: The path to the group. If not specified, it is set to a slash
+            (`/`).
+          type: string
+        UserName:
+          description: The name of the user you want to remove from the group.
+          type: string
+        UserPath:
+          description: The path to the user (by default, `/`).
+          type: string
+      required:
+      - UserGroupName
+      - UserName
+      type: object
+    RemoveUserFromUserGroupResponse:
       additionalProperties: false
       properties:
         ResponseContext:
@@ -8948,7 +9701,7 @@ components:
           description: The ID of the NIC.
           type: string
         State:
-          description: 'The state of a route in the route table (always `active`). '
+          description: The state of a route in the route table (always `active`).
           type: string
         VmAccountId:
           description: The account ID of the owner of the VM.
@@ -9172,8 +9925,8 @@ components:
           description: The name of the server certificate.
           type: string
         Orn:
-          description: The Outscale Resource Name (ORN) of the server certificate.
-            For more information, see [Resource Identifiers > Outscale Resource Names
+          description: The OUTSCALE Resource Name (ORN) of the server certificate.
+            For more information, see [Resource Identifiers > OUTSCALE Resource Names
             (ORNs)](https://docs.outscale.com/en/userguide/Resource-Identifiers.html#_outscale_resource_names_orns).
           type: string
         Path:
@@ -9206,6 +9959,7 @@ components:
         PolicyOrn:
           description: The OUTSCALE Resource Name (ORN) of the policy. For more information,
             see [Resource Identifiers](https://docs.outscale.com/en/userguide/Resource-Identifiers.html).
+          pattern: "^orn:ows:(iam|idauth):\\S*:\\d{12}:policy/\\S+$"
           type: string
         VersionId:
           description: The ID of the version.
@@ -9231,7 +9985,7 @@ components:
           description: The account ID of the owner of the snapshot.
           type: string
         CreationDate:
-          description: The date and time of creation of the snapshot.
+          description: The date and time (UTC) of creation of the snapshot.
           format: datetime
           type: string
         Description:
@@ -9246,7 +10000,8 @@ components:
           description: The ID of the snapshot.
           type: string
         State:
-          description: The state of the snapshot (`in-queue` \| `completed` \| `error`).
+          description: The state of the snapshot (`in-queue` \| `pending` \| `completed`
+            \| `error` \| `deleting`)).
           type: string
         Tags:
           description: One or more tags associated with the snapshot.
@@ -9497,26 +10252,50 @@ components:
       additionalProperties: false
       properties:
         BackendIps:
-          description: " One or more public IPs of back-end VMs."
+          description: One or more public IPs of backend VMs.
           items:
             type: string
           type: array
         BackendVmIds:
-          description: " One or more IDs of back-end VMs."
+          description: One or more IDs of backend VMs.
           items:
             type: string
           type: array
         DryRun:
-          description: " If true, checks whether you have the required permissions
-            to perform the action."
+          description: If true, checks whether you have the required permissions to
+            perform the action.
           type: boolean
         LoadBalancerName:
-          description: " The name of the load balancer."
+          description: The name of the load balancer.
           type: string
       required:
       - LoadBalancerName
       type: object
     UnlinkLoadBalancerBackendMachinesResponse:
+      additionalProperties: false
+      properties:
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
+      type: object
+    UnlinkManagedPolicyFromUserGroupRequest:
+      additionalProperties: false
+      properties:
+        DryRun:
+          description: If true, checks whether you have the required permissions to
+            perform the action.
+          type: boolean
+        PolicyOrn:
+          description: The OUTSCALE Resource Name (ORN) of the policy. For more information,
+            see [Resource Identifiers](https://docs.outscale.com/en/userguide/Resource-Identifiers.html).
+          type: string
+        UserGroupName:
+          description: The name of the group you want to unlink the policy from.
+          type: string
+      required:
+      - PolicyOrn
+      - UserGroupName
+      type: object
+    UnlinkManagedPolicyFromUserGroupResponse:
       additionalProperties: false
       properties:
         ResponseContext:
@@ -9551,6 +10330,7 @@ components:
         PolicyOrn:
           description: The OUTSCALE Resource Name (ORN) of the policy. For more information,
             see [Resource Identifiers](https://docs.outscale.com/en/userguide/Resource-Identifiers.html).
+          pattern: "^orn:ows:(iam|idauth):\\S*:\\d{12}:policy/\\S+$"
           type: string
         UserName:
           description: The name of the user you want to detach the policy from.
@@ -9838,7 +10618,7 @@ components:
             perform the action.
           type: boolean
         IpRanges:
-          description: One or more IP addresses or CIDR blocks (for example, `192.0.2.0/16`).
+          description: One or more IPs or CIDR blocks (for example, `192.0.2.0/16`).
           items:
             type: string
           type: array
@@ -9957,6 +10737,9 @@ components:
     UpdateImageRequest:
       additionalProperties: false
       properties:
+        Description:
+          description: A new description for the image.
+          type: string
         DryRun:
           description: If true, checks whether you have the required permissions to
             perform the action.
@@ -9968,7 +10751,6 @@ components:
           "$ref": "#/components/schemas/PermissionsOnResourceCreation"
       required:
       - ImageId
-      - PermissionsToLaunch
       type: object
     UpdateImageResponse:
       additionalProperties: false
@@ -10055,8 +10837,8 @@ components:
             type: string
           type: array
         ServerCertificateId:
-          description: The Outscale Resource Name (ORN) of the server certificate.
-            For more information, see [Resource Identifiers > Outscale Resource Names
+          description: The OUTSCALE Resource Name (ORN) of the server certificate.
+            For more information, see [Resource Identifiers > OUTSCALE Resource Names
             (ORNs)](https://docs.outscale.com/en/userguide/Resource-Identifiers.html#_outscale_resource_names_orns).
             If this parameter is specified, you must also specify the `LoadBalancerPort`
             parameter.
@@ -10339,6 +11121,43 @@ components:
         Subnet:
           "$ref": "#/components/schemas/Subnet"
       type: object
+    UpdateUserGroupRequest:
+      additionalProperties: false
+      properties:
+        DryRun:
+          description: If true, checks whether you have the required permissions to
+            perform the action.
+          type: boolean
+        NewPath:
+          description: A new path for the group. If not specified, it is set to a
+            slash (`/`).
+          type: string
+        NewUserGroupName:
+          description: A new name for the user group.
+          type: string
+        Path:
+          description: The path to the group. If not specified, it is set to a slash
+            (`/`).
+          type: string
+        UserGroupName:
+          description: The name of the group you want to update.
+          type: string
+      required:
+      - UserGroupName
+      type: object
+    UpdateUserGroupResponse:
+      additionalProperties: false
+      properties:
+        ResponseContext:
+          "$ref": "#/components/schemas/ResponseContext"
+        UserGroup:
+          "$ref": "#/components/schemas/UserGroup"
+        Users:
+          description: A list of EIM users.
+          items:
+            "$ref": "#/components/schemas/User"
+          type: array
+      type: object
     UpdateUserRequest:
       additionalProperties: false
       properties:
@@ -10559,7 +11378,7 @@ components:
           description: The ID of the VPN connection you want to modify.
           type: string
         VpnOptions:
-          "$ref": "#/components/schemas/VpnOptionsToUpdate"
+          "$ref": "#/components/schemas/VpnOptions"
       required:
       - VpnConnectionId
       type: object
@@ -10575,14 +11394,50 @@ components:
       additionalProperties: false
       description: Information about the EIM user.
       properties:
+        CreationDate:
+          description: The date and time (UTC) of creation of the EIM user.
+          format: date-time
+          type: string
+        LastModificationDate:
+          description: The date and time (UTC) of the last modification of the EIM
+            user.
+          format: date-time
+          type: string
         Path:
           description: The path to the EIM user.
           type: string
         UserId:
-          description: " The ID of the EIM user."
+          description: The ID of the EIM user.
           type: string
         UserName:
           description: The name of the EIM user.
+          type: string
+      type: object
+    UserGroup:
+      additionalProperties: false
+      description: Information about the user group.
+      properties:
+        CreationDate:
+          description: The date and time (UTC) of creation of the user group.
+          format: date-time
+          type: string
+        LastModificationDate:
+          description: The date and time (UTC) of the last modification of the user
+            group.
+          format: date-time
+          type: string
+        Name:
+          description: The name of the user group.
+          type: string
+        Orn:
+          description: The Outscale Resource Name (ORN) of the user group. For more
+            information, see [Resource Identifiers](https://docs.outscale.com/en/userguide/Resource-Identifiers.html).
+          type: string
+        Path:
+          description: The path to the user group.
+          type: string
+        UserGroupId:
+          description: The ID of the user group.
           type: string
       type: object
     VgwTelemetry:
@@ -10653,7 +11508,7 @@ components:
           description: The idempotency token provided when launching the VM.
           type: string
         CreationDate:
-          description: The date and time of creation of the VM.
+          description: The date and time (UTC) of creation of the VM.
           format: datetime
           type: string
         DeletionProtection:
@@ -10766,7 +11621,7 @@ components:
       description: Information about the VM group.
       properties:
         CreationDate:
-          description: The date and time of creation of the VM group.
+          description: The date and time (UTC) of creation of the VM group.
           format: datetime
           type: string
         Description:
@@ -10789,8 +11644,6 @@ components:
             type: string
           type: array
         State:
-          description: The state of the VM group (`pending` \| `available` \| `scaling
-            up` \| `scaling down` \| `deleting` \| `deleted`).
           enum:
           - available
           - deleted
@@ -10803,7 +11656,7 @@ components:
           description: The ID of the Subnet for the VM group.
           type: string
         Tags:
-          description: One or more tags associated with the VM group.
+          description: One or more tags associated with the VM.
           items:
             "$ref": "#/components/schemas/ResourceTag"
           type: array
@@ -10863,7 +11716,6 @@ components:
       type: object
     VmTemplate:
       additionalProperties: false
-      description: Information about the VM template.
       properties:
         CpuCores:
           description: The number of vCores.
@@ -10879,7 +11731,7 @@ components:
           - highest
           type: string
         CreationDate:
-          description: The date and time of creation of the VM template.
+          description: The date and time (UTC) of creation of the VM template.
           format: date-time
           type: string
         Description:
@@ -10956,7 +11808,7 @@ components:
       description: Information about the volume.
       properties:
         CreationDate:
-          description: The date and time of creation of the volume.
+          description: The date and time (UTC) of creation of the volume.
           format: datetime
           type: string
         Iops:
@@ -11054,17 +11906,6 @@ components:
           "$ref": "#/components/schemas/Phase1Options"
         Phase2Options:
           "$ref": "#/components/schemas/Phase2Options"
-        TunnelInsideIpRange:
-          description: The range of inside IPs for the tunnel. This must be a /30
-            CIDR block from the 169.254.254.0/24 range.
-          type: string
-      type: object
-    VpnOptionsToUpdate:
-      additionalProperties: false
-      description: Information about the VPN options.
-      properties:
-        Phase2Options:
-          "$ref": "#/components/schemas/Phase2OptionsToUpdate"
         TunnelInsideIpRange:
           description: The range of inside IPs for the tunnel. This must be a /30
             CIDR block from the 169.254.254.0/24 range.
@@ -11178,9 +12019,8 @@ info:
     To protect against overloads, the number of identical requests allowed in a given
     time period is limited.<br />\nBrute force: To protect against brute force attacks,
     the number of failed authentication attempts in a given time period is limited.<br
-    /><br />\nYou can learn more about errors returned by the API in the dedicated
-    [errors page](api/errors).<br /><br />\nNote that the OUTSCALE Cloud is compatible
-    with Amazon Web Services (AWS) APIs, but there are [differences in resource names](https://docs.outscale.com/en/userguide/OUTSCALE-APIs-Reference.html)
+    /><br />\nNote that the OUTSCALE Cloud is compatible with Amazon Web Services
+    (AWS) APIs, but there are [differences in resource names](https://docs.outscale.com/en/userguide/OUTSCALE-APIs-Reference.html)
     between AWS and the OUTSCALE API.<br />\nYou can also manage your resources using
     the [Cockpit](https://docs.outscale.com/en/userguide/About-Cockpit.html) web interface.<br
     /><br />\nAn OpenAPI description of the OUTSCALE API is also available in this
@@ -11197,29 +12037,37 @@ info:
     more information, see [Installing and Configuring OSC CLI](https://docs.outscale.com/en/userguide/Installing-and-Configuring-OSC-CLI.html).\n\nSee
     the code samples in each section of this documentation for specific examples in
     different programming languages.<br />\nFor more information about access keys,
-    see [About Access Keys](https://docs.outscale.com/en/userguide/About-Access-Keys.html).\n###
-    Login/Password\nFor certain API actions, you can also use basic authentication
-    with the login (email address) and password of your TINA account.<br />\nThis
-    is useful only in special circumstances, for example if you do not know your access
-    key/secret key and want to retrieve them programmatically.<br />\nIn most cases,
-    however, you can use the Cockpit web interface to retrieve them.<br />\n\n> For
-    example, if you use OSC CLI:\n> 1. You need to create an **~/.osc/config.json**
-    file to specify the Region of your account, but you leave the access key value
-    and secret key value empty (`&quot;&quot;`).\n> 2. You then specify the `--profile`,
-    `--authentication-method`, `--login`, and `--password` options when executing
-    OSC CLI commands.\n\nSee the code samples in each section of this documentation
-    for specific examples in different programming languages.\n### No Authentication\nA
-    few API actions do not require any authentication. They are indicated as such
-    in this documentation.<br />\n### Other Security Mechanisms\nIn parallel with
-    the authentication schemes, you can add other security mechanisms to your OUTSCALE
-    account, for example to restrict API requests by IP or other criteria.<br />\nFor
-    more information, see [Managing Your API Accesses](https://docs.outscale.com/en/userguide/Managing-Your-API-Accesses.html)."
+    see [About Access Keys](https://docs.outscale.com/en/userguide/About-Access-Keys.html).\n\n>
+    If you try to sign requests with an invalid access key four times in a row, further
+    authentication attempts will be prevented for 1 minute. This lockout time increases
+    1 minute every four failed attempts, for up to 10 minutes.\n\n### Login/Password\nFor
+    certain API actions, you can also use basic authentication with the login (email
+    address) and password of your TINA account.<br />\nThis is useful only in special
+    circumstances, for example if you do not know your access key/secret key and want
+    to retrieve them programmatically.<br />\nIn most cases, however, you can use
+    the Cockpit web interface to retrieve them.<br />\n\n> For example, if you use
+    OSC CLI:\n> 1. You need to create an **~/.osc/config.json** file to specify the
+    Region of your account, but you leave the access key value and secret key value
+    empty (`&quot;&quot;`).\n> 2. You then specify the `--profile`, `--authentication-method`,
+    `--login`, and `--password` options when executing OSC CLI commands.\n\nSee the
+    code samples in each section of this documentation for specific examples in different
+    programming languages.\n\n> If you try to sign requests with an invalid password
+    four times in a row, further authentication attempts will be prevented for 1 minute.
+    This lockout time increases 1 minute every four failed attempts, for up to 10
+    minutes.\n\n### No Authentication\nA few API actions do not require any authentication.
+    They are indicated as such in this documentation.<br />\n### Other Security Mechanisms\nIn
+    parallel with the authentication schemes, you can add other security mechanisms
+    to your OUTSCALE account, for example to restrict API requests by IP or other
+    criteria.<br />\nFor more information, see [Managing Your API Accesses](https://docs.outscale.com/en/userguide/Managing-Your-API-Accesses.html).<br
+    />\n# Error Codes Reference\nYou can learn more about errors returned by the API
+    in the dedicated [errors page](api-errors.html)."
   license:
     name: BSD 3 Clause
     url: https://opensource.org/licenses/BSD-3-Clause
   termsOfService: https://en.outscale.com/terms-of-service/
   title: 3DS OUTSCALE API
-  version: 1.28.7
+  version: 1.29.3
+  x-osc-api-type: external
 openapi: 3.0.0
 paths:
   "/AcceptNetPeering":
@@ -11293,6 +12141,36 @@ paths:
           description: The HTTP 500 response (Internal Server Error).
       tags:
       - NetPeering
+  "/AddUserToUserGroup":
+    description: Adds a user to a specified group.
+    post:
+      operationId: AddUserToUserGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/AddUserToUserGroupRequest"
+            examples:
+              ex1:
+                value:
+                  UserGroupName: example-usergroup
+                  UserGroupPath: "/example/"
+                  UserName: example-user
+                  UserPath: "/example/"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/AddUserToUserGroupResponse"
+              examples:
+                ex1:
+                  value:
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+          description: The HTTP 200 response (OK).
+      tags:
+      - UserGroup
   "/CheckAuthentication":
     description: Validates the authenticity of the account.
     post:
@@ -12005,7 +12883,7 @@ paths:
       - Image
   "/CreateImageExportTask":
     description: |-
-      Exports an Outscale machine image (OMI) to an OUTSCALE Object Storage (OOS) bucket.<br />
+      Exports an OUTSCALE machine image (OMI) to an OUTSCALE Object Storage (OOS) bucket.<br />
       This action enables you to copy an OMI between accounts in different Regions. To copy an OMI in the same Region, you can also use the [CreateImage](#createimage) method.<br />
       The copy of the OMI belongs to you and is independent from the source OMI.<br /><br />
 
@@ -12519,7 +13397,7 @@ paths:
     description: |-
       Creates a stickiness policy with sticky session lifetimes defined by the browser lifetime.<br />
       The created policy can be used with HTTP or HTTPS listeners only.<br />
-      If this policy is implemented by a load balancer, this load balancer uses this cookie in all incoming requests to direct them to the specified back-end server virtual machine (VM). If this cookie is not present, the load balancer sends the request to any other server according to its load-balancing algorithm.<br /><br />
+      If this policy is implemented by a load balancer, this load balancer uses this cookie in all incoming requests to direct them to the specified backend server virtual machine (VM). If this cookie is not present, the load balancer sends the request to any other server according to its load-balancing algorithm.<br /><br />
 
       You can also create a stickiness policy with sticky session lifetimes following the lifetime of an application-generated cookie.<br />
       Unlike the other type of stickiness policy, the lifetime of the special Load Balancer Unit (LBU) cookie follows the lifetime of the application-generated cookie specified in the policy configuration. The load balancer inserts a new stickiness cookie only when the application response includes a new application cookie.<br />
@@ -13510,7 +14388,7 @@ paths:
     description: |-
       Creates a server certificate and its matching private key.<br /><br />
       These elements can be used with other services (for example, to configure SSL termination on load balancers).<br /><br />
-      You can also specify the chain of intermediate certification authorities if your certificate is not directly signed by a root one. You can specify multiple intermediate certification authorities in the `CertificateChain` parameter. To do so, concatenate all certificates in the correct order (the first certificate must be the authority of your certificate, the second must the the authority of the first one, and so on).<br /><br />
+      You can also specify the chain of intermediate certification authorities if your certificate is not directly signed by a root one. You can specify multiple intermediate certification authorities in the `CertificateChain` parameter. To do so, concatenate all certificates in the correct order (the first certificate must be the authority of your certificate, the second must be the authority of the first one, and so on).<br /><br />
       The private key must be a RSA key in PKCS1 form. To check this, open the PEM file and ensure its header reads as follows: BEGIN RSA PRIVATE KEY.<br /><br />
       [IMPORTANT]<br /><br />
       This private key must not be protected by a password or a passphrase.<br /><br />
@@ -13556,6 +14434,9 @@ paths:
       * **Creating from a volume**: You create a snapshot from one of your volumes.<br />
       * **Copying a snapshot**: You copy an existing snapshot. The source snapshot can be one of your own snapshots, or a snapshot owned by another account that has granted you permission via the [UpdateSnapshot](#updatesnapshot) method.<br />
       * **Importing from a bucket**: You import a snapshot located in an OUTSCALE Object Storage (OOS) bucket. First, the owner of the source snapshot must export it to the bucket by using the [CreateSnapshotExportTask](#createsnapshotexporttask) method. Then, they must grant you permission to read the snapshot via a pre-signed URL or Access Control Lists. For more information, see [Managing Access to Your Buckets and Objects](https://docs.outscale.com/en/userguide/Managing-Access-to-Your-Buckets-and-Objects.html).
+
+      **[NOTE]**<br />
+      In case of excessive use of the snapshot creation feature on the same volume over a short period of time, 3DS OUTSCALE reserves the right to temporarily block the feature.
 
       For more information, see [About Snapshots](https://docs.outscale.com/en/userguide/About-Snapshots.html).
     post:
@@ -13884,6 +14765,43 @@ paths:
           description: The HTTP 200 response (OK).
       tags:
       - User
+  "/CreateUserGroup":
+    description: |-
+      Creates a group to which you can add users.<br />
+      You can also add an inline policy or link a managed policy to the group, which is applied to all its users.
+    post:
+      operationId: CreateUserGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUserGroupRequest"
+            examples:
+              ex1:
+                value:
+                  Path: "/example/"
+                  UserGroupName: example-usergroup
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CreateUserGroupResponse"
+              examples:
+                ex1:
+                  value:
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+                    UserGroup:
+                      CreationDate: '2010-10-01T12:34:56.789Z'
+                      LastModificationDate: 2010-10-01 12:34:56.789000000 +00:00
+                      Name: example-usergroup
+                      Orn: orn:ows:idauth::012345678910:usergroup/example/usergroup-example
+                      Path: "/example/"
+                      UserGroupId: ug-12345678
+          description: The HTTP 200 response (OK).
+      tags:
+      - UserGroup
   "/CreateVirtualGateway":
     description: |-
       Creates a virtual gateway.<br />
@@ -14033,18 +14951,19 @@ paths:
               examples:
                 ex1:
                   value:
-                    VmTemplateName: vmtemplate-example
-                    CpuPerformance: high
-                    CreationDate: 2010-10-01 12:34:56.789000000 +00:00
-                    CpuCores: 2
-                    Tags:
-                    - Key: key1
-                      Value: value1
-                    Description: Log collector template
-                    ImageId: ami-12345678
-                    CpuGeneration: v4
-                    VmTemplateId: vmtemplate-98765432109876543210987654321012
-                    Ram: 2
+                    VmTemplate:
+                      VmTemplateName: vmtemplate-example
+                      CpuPerformance: high
+                      CreationDate: 2010-10-01 12:34:56.789000000 +00:00
+                      CpuCores: 2
+                      Tags:
+                      - Key: key1
+                        Value: value1
+                      Description: Log collector template
+                      ImageId: ami-12345678
+                      CpuGeneration: v4
+                      VmTemplateId: vmtemplate-98765432109876543210987654321012
+                      Ram: 2
                     ResponseContext:
                       RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
           description: The HTTP 200 response (OK).
@@ -16032,7 +16951,7 @@ paths:
       - Tag
   "/DeleteUser":
     description: Deletes a specified EIM user. The EIM user must not belong to any
-      group, nor have any key or attached policy.
+      group, nor have any key or linked policy.
     post:
       operationId: DeleteUser
       requestBody:
@@ -16058,6 +16977,69 @@ paths:
           description: The HTTP 200 response (OK).
       tags:
       - User
+  "/DeleteUserGroup":
+    description: |-
+      Deletes a specified user group.<br />
+
+      **[WARNING]**<br />
+      The user group must be empty of any user and must not have any linked policy. Otherwise, you need to force the deletion.<br />
+      If you force the deletion, all inline policies will be deleted with the user group.<br />
+    post:
+      operationId: DeleteUserGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/DeleteUserGroupRequest"
+            examples:
+              ex1:
+                value:
+                  Force: false
+                  Path: "/example/"
+                  UserGroupName: example-usergroup
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteUserGroupResponse"
+              examples:
+                ex1:
+                  value:
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+          description: The HTTP 200 response (OK).
+      tags:
+      - UserGroup
+  "/DeleteUserGroupPolicy":
+    description: Deletes a specified inline policy from a specific group.
+    post:
+      operationId: DeleteUserGroupPolicy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/DeleteUserGroupPolicyRequest"
+            examples:
+              ex1:
+                value:
+                  PolicyName: example-usergroup-policy
+                  UserGroupName: example-usergroup
+                  UserGroupPath: "/example/"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteUserGroupPolicyResponse"
+              examples:
+                ex1:
+                  value:
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+          description: The HTTP 200 response (OK).
+      tags:
+      - Policy
   "/DeleteVirtualGateway":
     description: |-
       Deletes a specified virtual gateway.<br />
@@ -16358,7 +17340,10 @@ paths:
   "/LinkFlexibleGpu":
     description: |-
       Attaches one of your allocated flexible GPUs (fGPUs) to one of your virtual machines (VMs).<br />
-      The fGPU is in the `attaching` state until the VM is stopped, after which it becomes `attached`.
+      The fGPU is in the `attaching` state until the VM is stopped, after which it becomes `attached`. <br /><br />
+
+      **[NOTE]**<br />
+      You can attach fGPUs only to VMs with the `highest` (1) performance flag. For more information see [About Flexible GPUs](https://docs.outscale.com/en/userguide/About-Flexible-GPUs.html) and [VM Types](https://docs.outscale.com/en/userguide/VM-Types.html).
     post:
       operationId: LinkFlexibleGpu
       requestBody:
@@ -16436,7 +17421,7 @@ paths:
   "/LinkLoadBalancerBackendMachines":
     description: |-
       Attaches one or more virtual machines (VMs) to a specified load balancer. You need to specify at least the `BackendIps` or the `BackendVmIds` parameter.<br />
-      The VMs can be in different Subnets and different Subregions than the load balancer, as long as the VMs and load balancers are all in the public Cloud or all in the same Net. It may take a little time for a VM to be registered with the load balancer. Once the VM is registered with a load balancer, it receives traffic and requests from this load balancer and is called a back-end VM.
+      The VMs can be in different Subnets and different Subregions than the load balancer, as long as the VMs and load balancers are all in the public Cloud or all in the same Net. It may take a little time for a VM to be registered with the load balancer. Once the VM is registered with a load balancer, it receives traffic and requests from this load balancer and is called a backend VM.
     post:
       operationId: LinkLoadBalancerBackendMachines
       requestBody:
@@ -16479,6 +17464,35 @@ paths:
           description: The HTTP 200 response (OK).
       tags:
       - LoadBalancer
+  "/LinkManagedPolicyToUserGroup":
+    description: Links a managed policy to a specific group. This policy applies to
+      all the users contained in this group.
+    post:
+      operationId: LinkManagedPolicyToUserGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/LinkManagedPolicyToUserGroupRequest"
+            examples:
+              ex1:
+                value:
+                  PolicyOrn: orn:ows:idauth::012345678910:policy/example/example-user-policy
+                  UserGroupName: example-usergroup
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/LinkManagedPolicyToUserGroupResponse"
+              examples:
+                ex1:
+                  value:
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+          description: The HTTP 200 response (OK).
+      tags:
+      - Policy
   "/LinkNic":
     description: |-
       Attaches a network interface card (NIC) to a virtual machine (VM).<br />
@@ -16816,6 +17830,39 @@ paths:
           description: The HTTP 500 response (Internal Server Error).
       tags:
       - Volume
+  "/PutUserGroupPolicy":
+    description: |-
+      Creates or updates an inline policy included in a specified group.<br />
+      The policy is automatically applied to all the users of the group after its creation.
+    post:
+      operationId: PutUserGroupPolicy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/PutUserGroupPolicyRequest"
+            examples:
+              ex1:
+                value:
+                  PolicyDocument: '{"Statement": [ {"Effect": "Allow", "Action": ["*"],
+                    "Resource": ["*"]} ]}'
+                  PolicyName: example-usergroup-policy
+                  UserGroupName: example-usergroup
+                  UserGroupPath: "/example/"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/PutUserGroupPolicyResponse"
+              examples:
+                ex1:
+                  value:
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+          description: The HTTP 200 response (OK).
+      tags:
+      - Policy
   "/ReadAccessKeys":
     description: Lists the access key IDs of either your root account or an EIM user.
     post:
@@ -17047,7 +18094,7 @@ paths:
       **[IMPORTANT]**<br />
       Past logs are accessible for up to 32 days.<br />
       By default, the retrieved interval is 48 hours. If neither of the `QueryDateBefore` nor `QueryDateAfter` parameters are specified, logs from the past 48 hours are retrieved. If you only specify one of two, logs are retrieved from a 2-day interval based on the date you provided. To retrieve logs beyond a 2-day interval, specify both parameters.<br /><br />
-      For more information, see [About OUTSCALE Monitoring Services (OMS)](https://docs.outscale.com/en/userguide/About-OUTSCALE-Monitoring-Services-OMS.html).
+      For more information, see [About OMS](https://docs.outscale.com/en/userguide/About-OMS.html).
     post:
       operationId: ReadApiLogs
       requestBody:
@@ -17338,18 +18385,21 @@ paths:
                     ResponseContext:
                       RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
                     ConsumptionEntries:
-                    - FromDate: 2023-06-01 00:00:00.000000000 +00:00
+                    - UnitPrice: 0.044
+                      Type: BoxUsage:tinav4.c1r1p2
+                      Operation: RunInstances-OD
                       SubregionName: eu-west-2a
-                      Value: 720.0
-                      Title: Instance - On demand - tinav4.c2r4 high performance -
+                      Value: 1392
+                      Title: Instance - On demand - tinav4.c1r1 high performance -
                         par heure
                       Category: compute
                       ToDate: 2023-06-30 00:00:00.000000000 +00:00
                       Service: TinaOS-FCU
                       AccountId: '123456789012'
                       PayingAccountId: '123456789012'
-                      Operation: RunInstances-OD
-                      Type: BoxUsage:tinav4.c2r4p2
+                      FromDate: 2023-06-01 00:00:00.000000000 +00:00
+                      Price: 61.248
+                    Currency: EUR
           description: The HTTP 200 response (OK).
       tags:
       - Account
@@ -18136,6 +19186,48 @@ paths:
       security: []
       tags:
       - Location
+  "/ReadManagedPoliciesLinkedToUserGroup":
+    description: Lists the managed policies linked to a specified group.
+    post:
+      operationId: ReadManagedPoliciesLinkedToUserGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ReadManagedPoliciesLinkedToUserGroupRequest"
+            examples:
+              ex1:
+                value:
+                  Filters:
+                    PathPrefix: "/ex"
+                    UserGroupIds:
+                    - ug-12345678
+                  FirstItem: 1
+                  ResultsPerPage: 30
+                  UserGroupName: example-usergroup
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ReadManagedPoliciesLinkedToUserGroupResponse"
+              examples:
+                ex1:
+                  value:
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+                    HasMoreItems: true
+                    MaxResultsLimit: 30
+                    MaxResultsTruncated: true
+                    Policies:
+                    - CreationDate: '2010-10-01T12:34:56.789Z'
+                      LastModificationDate: '2010-10-01T12:34:56.789Z'
+                      Orn: orn:ows:idauth::012345678910:policy/example/example-user-policy
+                      PolicyId: ABCDEFGHIJKLMNOPQRSTUVWXYZ01234
+                      PolicyName: example-policy
+          description: The HTTP 200 response (OK).
+      tags:
+      - Policy
   "/ReadNatServices":
     description: Lists one or more network address translation (NAT) services.
     post:
@@ -19472,6 +20564,197 @@ paths:
           description: The HTTP 500 response (Internal Server Error).
       tags:
       - Tag
+  "/ReadUserGroup":
+    description: Lists information about a specified user group, including its users.
+    post:
+      operationId: ReadUserGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ReadUserGroupRequest"
+            examples:
+              ex1:
+                value:
+                  Path: "/example/"
+                  UserGroupName: example-usergroup
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ReadUserGroupResponse"
+              examples:
+                ex1:
+                  value:
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+                    UserGroup:
+                      CreationDate: '2010-10-01T12:34:56.789Z'
+                      LastModificationDate: '2010-10-01T12:34:56.789Z'
+                      Name: example-usergroup
+                      Orn: orn:ows:idauth::012345678910:usergroup/example/usergroup-example
+                      Path: "/example/"
+                      UserGroupId: ug-12345678
+                    Users:
+                    - CreationDate: '2010-10-01T12:34:56.789Z'
+                      LastModificationDate: '2010-10-01T12:34:56.789Z'
+                      Path: "/example/"
+                      UserId: ABCDEFGHIJKLMNOPQRSTUVWXYZ12345
+                      UserName: example-user
+          description: The HTTP 200 response (OK).
+      tags:
+      - UserGroup
+  "/ReadUserGroupPolicies":
+    description: Lists the names of the inline policies embedded in a specific group.
+    post:
+      operationId: ReadUserGroupPolicies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ReadUserGroupPoliciesRequest"
+            examples:
+              ex1:
+                value:
+                  FirstItem: 1
+                  ResultsPerPage: 30
+                  UserGroupName: example-usergroup
+                  UserGroupPath: "/example/"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ReadUserGroupPoliciesResponse"
+              examples:
+                ex1:
+                  value:
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+                    HasMoreItems: true
+                    MaxResultsLimit: 30
+                    MaxResultsTruncated: true
+                    Policies:
+                    - Body: '{"Statement": [ {"Effect": "Allow", "Action": ["*"],
+                        "Resource": ["*"]} ]}'
+                      Name: example-policy
+          description: The HTTP 200 response (OK).
+      tags:
+      - Policy
+  "/ReadUserGroupPolicy":
+    description: Returns information about an inline policy included in a specified
+      group.
+    post:
+      operationId: ReadUserGroupPolicy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ReadUserGroupPolicyRequest"
+            examples:
+              ex1:
+                value:
+                  PolicyName: example-policy
+                  UserGroupName: example-usergroup
+                  UserGroupPath: "/example/"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ReadUserGroupPolicyResponse"
+              examples:
+                ex1:
+                  value:
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+                    Policy:
+                      Body: '{"Statement": [ {"Effect": "Allow", "Action": ["*"],
+                        "Resource": ["*"]} ]}'
+                      Name: example-policy
+          description: The HTTP 200 response (OK).
+      tags:
+      - Policy
+  "/ReadUserGroups":
+    description: |-
+      Lists the groups with the specified path prefix.<br />
+      If you do not specify any path prefix, this action returns all the groups (or an empty list if there are none).
+    post:
+      operationId: ReadUserGroups
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ReadUserGroupsRequest"
+            examples:
+              ex1:
+                value:
+                  Filters:
+                    PathPrefix: "/ex"
+                    UserGroupIds:
+                    - ug-12345678
+                  FirstItem: 1
+                  ResultsPerPage: 30
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ReadUserGroupsResponse"
+              examples:
+                ex1:
+                  value:
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+                    HasMoreItems: true
+                    MaxResultsLimit: 30
+                    MaxResultsTruncated: true
+                    UserGroups:
+                    - CreationDate: '2010-10-01T12:34:56.789Z'
+                      LastModificationDate: '2010-10-01T12:34:56.789Z'
+                      Name: example-usergroup
+                      Orn: orn:ows:idauth::012345678910:usergroup/example/usergroup-example
+                      Path: "/example/"
+                      UserGroupId: ug-12345678
+          description: The HTTP 200 response (OK).
+      tags:
+      - UserGroup
+  "/ReadUserGroupsPerUser":
+    description: Lists the groups a specified user belongs to.
+    post:
+      operationId: ReadUserGroupsPerUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ReadUserGroupsPerUserRequest"
+            examples:
+              ex1:
+                value:
+                  UserName: example-user
+                  UserPath: "/example/"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ReadUserGroupsPerUserResponse"
+              examples:
+                ex1:
+                  value:
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+                    UserGroups:
+                    - CreationDate: '2010-10-01T12:34:56.789Z'
+                      LastModificationDate: '2010-10-01T12:34:56.789Z'
+                      Name: example-usergroup
+                      Orn: orn:ows:idauth::012345678910:usergroup/example/usergroup-example
+                      Path: "/example/"
+                      UserGroupId: ug-12345678
+          description: The HTTP 200 response (OK).
+      tags:
+      - UserGroup
   "/ReadUsers":
     description: |-
       Lists all EIM users that have a specified path.<br />
@@ -19590,8 +20873,10 @@ paths:
                     ResponseContext:
                       RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
                     VmGroups:
-                      SecurityGroupsIds: sg-87654321
-                      VmIds: i-12345678
+                    - SecurityGroupIds:
+                      - sg-87654321
+                      VmIds:
+                      - i-12345678
                       CreationDate: 2010-10-01 12:34:56.789000000 +00:00
                       VmCount: 1
                       VmGroupName: ClusterLog-PPD01
@@ -19647,7 +20932,7 @@ paths:
                   Filters:
                     CpuCores:
                     - 2
-                    CpuGeneration:
+                    CpuGenerations:
                     - v4
       responses:
         '200':
@@ -19659,7 +20944,7 @@ paths:
                 ex1:
                   value:
                     VmTemplates:
-                      VmTemplateName: vmtemplate-example
+                    - VmTemplateName: vmtemplate-example
                       CpuPerformance: high
                       CreationDate: 2010-10-01 12:34:56.789000000 +00:00
                       CpuCores: 2
@@ -19669,6 +20954,8 @@ paths:
                       CpuGeneration: v4
                       VmTemplateId: vmtemplate-98765432109876543210987654321012
                       Ram: 2
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
           description: The HTTP 200 response (OK).
       tags:
       - VmTemplate
@@ -19701,7 +20988,7 @@ paths:
                       VmTypeName: t2.small
                       BsuOptimized: false
                       MaxPrivateIps: 4
-                      MemorySize: 2.0
+                      MemorySize: 2
                       VcoreCount: 1
                     ResponseContext:
                       RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
@@ -19832,7 +21119,7 @@ paths:
       tags:
       - Vm
   "/ReadVmsHealth":
-    description: Lists the state of one or more back-end virtual machines (VMs) registered
+    description: Lists the state of one or more backend virtual machines (VMs) registered
       with a specified load balancer.
     post:
       operationId: ReadVmsHealth
@@ -20110,7 +21397,7 @@ paths:
   "/RegisterVmsInLoadBalancer":
     description: |-
       Registers one or more virtual machines (VMs) with a specified load balancer.<br />
-      The VMs can be in different Subnets and different Subregions than the load balancer, as long as the VMs and load balancers are all in the public Cloud or all in the same Net. It may take a little time for a VM to be registered with the load balancer. Once the VM is registered with a load balancer, it receives traffic and requests from this load balancer and is called a back-end VM.
+      The VMs can be in different Subnets and different Subregions than the load balancer, as long as the VMs and load balancers are all in the public Cloud or all in the same Net. It may take a little time for a VM to be registered with the load balancer. Once the VM is registered with a load balancer, it receives traffic and requests from this load balancer and is called a backend VM.
     post:
       operationId: RegisterVmsInLoadBalancer
       requestBody:
@@ -20192,6 +21479,36 @@ paths:
           description: The HTTP 500 response (Internal Server Error).
       tags:
       - NetPeering
+  "/RemoveUserFromUserGroup":
+    description: Removes a specified user from a specified group.
+    post:
+      operationId: RemoveUserFromUserGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RemoveUserFromUserGroupRequest"
+            examples:
+              ex1:
+                value:
+                  UserGroupName: example-usergroup
+                  UserGroupPath: "/example/"
+                  UserName: example-user
+                  UserPath: "/example/"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/RemoveUserFromUserGroupResponse"
+              examples:
+                ex1:
+                  value:
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+          description: The HTTP 200 response (OK).
+      tags:
+      - UserGroup
   "/ScaleDownVmGroup":
     description: |-
       > [WARNING]<br />
@@ -20433,7 +21750,7 @@ paths:
   "/UnlinkFlexibleGpu":
     description: |-
       Detaches a flexible GPU (fGPU) from a virtual machine (VM).<br />
-      The fGPU is in the `detaching` state until the VM is stopped, after which it becomes available for allocation again.
+      The fGPU is in the `detaching` state until the VM is stopped, after which it becomes `allocated`. It is then available again for attachment to a VM.
     post:
       operationId: UnlinkFlexibleGpu
       requestBody:
@@ -20508,9 +21825,8 @@ paths:
       tags:
       - InternetService
   "/UnlinkLoadBalancerBackendMachines":
-    description: Detaches one or more back-end virtual machines (VMs) from a load
-      balancer. You need to specify at least the `BackendIps` or the `BackendVmIds`
-      parameter.
+    description: Detaches one or more backend virtual machines (VMs) from a load balancer.
+      You need to specify at least the `BackendIps` or the `BackendVmIds` parameter.
     post:
       operationId: UnlinkLoadBalancerBackendMachines
       requestBody:
@@ -20553,6 +21869,34 @@ paths:
           description: The HTTP 200 response (OK).
       tags:
       - LoadBalancer
+  "/UnlinkManagedPolicyFromUserGroup":
+    description: Unlinks a managed policy from a specific group.
+    post:
+      operationId: UnlinkManagedPolicyFromUserGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UnlinkManagedPolicyFromUserGroupRequest"
+            examples:
+              ex1:
+                value:
+                  PolicyOrn: orn:ows:idauth::012345678910:policy/example/example-user-policy
+                  UserGroupName: example-usergroup
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UnlinkManagedPolicyFromUserGroupResponse"
+              examples:
+                ex1:
+                  value:
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+          description: The HTTP 200 response (OK).
+      tags:
+      - Policy
   "/UnlinkNic":
     description: |-
       Detaches a network interface card (NIC) from a virtual machine (VM).<br />
@@ -21290,6 +22634,7 @@ paths:
                 summary: Making an image private to everyone
                 value:
                   ImageId: ami-12345678
+                  Description: Private image
                   PermissionsToLaunch:
                     Removals:
                       GlobalPermission: true
@@ -21411,7 +22756,7 @@ paths:
                         AccountIds: []
                       AccountId: '123456789012'
                       Tags: []
-                      Description: ''
+                      Description: Private image
                       ImageId: ami-12345678
                       BlockDeviceMappings:
                       - DeviceName: "/dev/sda1"
@@ -22413,6 +23758,49 @@ paths:
           description: The HTTP 200 response (OK).
       tags:
       - User
+  "/UpdateUserGroup":
+    description: Modifies the name and/or the path of a specified group.
+    post:
+      operationId: UpdateUserGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateUserGroupRequest"
+            examples:
+              ex1:
+                value:
+                  NewPath: "/new-path/"
+                  NewUserGroupName: new-usergroup
+                  Path: "/example/"
+                  UserGroupName: example-usergroup
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UpdateUserGroupResponse"
+              examples:
+                ex1:
+                  value:
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+                    UserGroup:
+                      CreationDate: '2010-10-01T12:34:56.789Z'
+                      LastModificationDate: '2010-10-01T12:34:56.789Z'
+                      Name: new-usergroup
+                      Orn: orn:ows:idauth::012345678910:usergroup/example/usergroup-example
+                      Path: "/new-path/"
+                      UserGroupId: ug-12345678
+                    Users:
+                    - CreationDate: '2010-10-01T12:34:56.789Z'
+                      LastModificationDate: '2010-10-01T12:34:56.789Z'
+                      Path: "/example/"
+                      UserId: ABCDEFGHIJKLMNOPQRSTUVWXYZ12345
+                      UserName: example-user
+          description: The HTTP 200 response (OK).
+      tags:
+      - UserGroup
   "/UpdateVm":
     description: |-
       Modifies the specified attributes of a virtual machine (VM).<br />
@@ -22651,8 +24039,8 @@ paths:
                       VmGroupId: vmgroup-12345678901234567890123456789012
                       Description: New description of the VM group
                       Tags: []
-                      ResponseContext:
-                        RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
+                    ResponseContext:
+                      RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
           description: The HTTP 200 response (OK).
         '400':
           content:
@@ -22702,16 +24090,17 @@ paths:
               examples:
                 ex1:
                   value:
-                    VmTemplateName: second-name
-                    CpuPerformance: high
-                    CreationDate: 2010-10-01 12:34:56.789000000 +00:00
-                    CpuCores: 2
-                    Tags: []
-                    Description: The new description of the VM template
-                    ImageId: ami-12345678
-                    CpuGeneration: v4
-                    VmTemplateId: vmtemplate-98765432109876543210987654321012
-                    Ram: 2
+                    VmTemplate:
+                      VmTemplateName: second-name
+                      CpuPerformance: high
+                      CreationDate: 2010-10-01 12:34:56.789000000 +00:00
+                      CpuCores: 2
+                      Tags: []
+                      Description: The new description of the VM template
+                      ImageId: ami-12345678
+                      CpuGeneration: v4
+                      VmTemplateId: vmtemplate-98765432109876543210987654321012
+                      Ram: 2
                     ResponseContext:
                       RequestId: 0475ca1e-d0c5-441d-712a-da55a4175157
           description: The HTTP 200 response (OK).
