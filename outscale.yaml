@@ -5048,7 +5048,9 @@ components:
         NicLinkNicLinkNicDates:
           description: The dates and times (UTC) when the NICs were attached to the
             VMs.
-          items: string
+          items:
+            format: date
+            type: string
           type: array
         NicLinkNicLinkNicIds:
           description: The IDs of the NIC attachments.
