@@ -50,3 +50,20 @@ Then one PR will be open for each SDKs.
 ```
 
 
+## FAQ
+
+
+Q: Why rely on a hack instead of addressing the issue with the SDK generator?
+
+A: There are two problems with upgrading the generator:
+- The first issue is that it's not an easy task; it requires porting the patch used by the SDKs and extensive testing to prevent regressions.
+- The second problem is that some features, like `oneOf`, would require breaking changes, necessitating a new major version of the SDKs and forcing all clients to upgrade their code.
+
+
+Q: Then why not just fix the osc-api.yaml file?:
+
+A: Because the API file isn’t technically bugged; it simply uses features that weren’t available when we created the first SDK versions.
+
+Q: Does that mean those strange patches will stay forever?
+
+A: No, at some point, we may upgrade every generator and release new major versions of all relevant SDKs. However, when this happens, we’ll still need to maintain the older SDK versions for a while.
