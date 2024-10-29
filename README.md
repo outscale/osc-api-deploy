@@ -25,21 +25,28 @@ Then one PR will be open for each SDKs.
 ## schema
 
 ```
- [osc-api repo]        [osc-api-deploy repo]      [SDKs repos]
-       |                        |                      |
-   (release)                    |                      |
-       V                        |                      |
-(release-osc-api.yml)           |                      |
-                      \-->(call build.yml)             |
-                                V                      |
-                       (hack outscale.yaml)            |
-                                V                      |
-                           (open PR)                   |
-                                V                      |
-                            (PR merge)                 V
-                                      \---->(start release CI with hacked yaml)
-                                                       V
-                                               (PR for releases)
+ [osc-api repo]        [osc-api-deploy repo]      [SDKs repos]                   [ oapi-cli ]
+       |                        |                      |                              |
+   (release)                    |                      |                              |
+       V                        |                      |                              |
+(release-osc-api.yml)           |                      |                              |
+                      \-->(call build.yml)             |                              |
+                                V                      |                              |
+                       (hack outscale.yaml)            |                              |
+                                V                      |                              |
+                           (open PR)                   |                              |
+                                V                      |                              |
+                        (PR manual merge)              V                              |
+                                      \---->(start release CI with hacked yaml)       |
+                                                       V                              |
+                                               (PR for releases)                      |
+                                                       V                              |
+                                               (PR manual merges)                     |
+                                                       \--------------->(osc-sdk-C start oapi-cli CI)
+                                                                                      V
+                                                                               (PR for release)
+                                                                                      V
+                                                                               (PR manual merges)
 ```
 
 
