@@ -67,3 +67,13 @@ A: Because the API file isn’t technically bugged; it simply uses features that
 Q: Does that mean those strange patches will stay forever?
 
 A: No, at some point, we may upgrade every generator and release new major versions of all relevant SDKs. However, when this happens, we’ll still need to maintain the older SDK versions for a while.
+
+Q: What are recurent bug that happen on SDKs release:
+
+A: so far we have encounter 2 kinds of bug that generally break SDKs releases:
+- usage of new features in openapi, that are not supported by generators.
+- a CI break due to a dependancy becoming outdated. 
+
+Q: Why are the hack in ruby ?
+
+A: no particular reason here, but are very small hack, and could have been writed in any language that support yaml.
