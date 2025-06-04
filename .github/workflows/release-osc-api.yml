@@ -5,9 +5,9 @@ on:
 
 jobs:
   osc-sdk-go:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: main
       - name: Getting release details
@@ -19,9 +19,9 @@ jobs:
           API_VERSION: ${{ steps.release.outputs.TAG }}
         run: .github/scripts/build-osc-sdk.sh osc-sdk-go v2
   osc-sdk-python:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: main
       - name: Getting release details
@@ -33,9 +33,9 @@ jobs:
           API_VERSION: ${{ steps.release.outputs.TAG }}
         run: .github/scripts/build-osc-sdk.sh osc-sdk-python
   osc-sdk-rust:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: main
       - name: Getting release details
@@ -47,9 +47,9 @@ jobs:
           API_VERSION: ${{ steps.release.outputs.TAG }}
         run: .github/scripts/build-osc-sdk.sh osc-sdk-rust
   osc-sdk-c:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: main
       - name: Getting release details
@@ -61,9 +61,9 @@ jobs:
           API_VERSION: ${{ steps.release.outputs.TAG }}
         run: .github/scripts/build-osc-sdk.sh osc-sdk-c
   osc-sdk-js:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: main
       - name: Getting release details
@@ -75,9 +75,9 @@ jobs:
           API_VERSION: ${{ steps.release.outputs.TAG }}
         run: .github/scripts/build-osc-sdk.sh osc-sdk-js main
   osc-sdk-java:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: main
       - name: Getting release details
