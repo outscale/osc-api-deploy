@@ -16,6 +16,7 @@ mv "$root/outscale.yaml" "/tmp/outscale.yaml"
 $root/hacks/patch.rb "$root/outscale-ori.yaml" "$root/old-outscale.yaml" > "$root/outscale.yaml"
 $root/hacks/patch-nooneof.rb "$root/outscale-ori.yaml" > "$root/outscale-java.yaml"
 $root/hacks/patch-nodatetime.rb "$root/outscale-ori.yaml" "$root/old-outscale.yaml" > "$root/outscale-go.yaml"
+$root/hacks/patch-noproperties-array.rb "$root/outscale-ori.yaml" > "$root/outscale-c.yaml"
 mv "/tmp/outscale.yaml" "$root/old-outscale.yaml"
 
 rm "$root/outscale-ori.yaml"
