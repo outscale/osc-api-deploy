@@ -1,9 +1,40 @@
 # osc-api-deploy hacks
 
-3 scripts here, those scripts are use to create outscale-go.yaml, outscale-java.yaml and outscale.yaml
+## Code generator limitations
 
-patch-nodatetime.rb take 2 arguments, the API file and the old API file. (so if last api is `1.8`, you need to call `patch-nodatetime.rb osc-api.1.8.json osc-api.1.7.json`) `patch.rb` take the same argument, and `patch-nooneof.rb` only take the API file.
+### oneOf
+Some openapi-generator's codegen (Rust) don't like oneOf types with identical type.
+It get confused and the produced code don't compile. Typescript Codegen 
+don't support OneOf at all. the only use of oneOf in osc-api is the
+following pattern
 
-`patch-nooneof.rb` will remove all oneof. `patch.rb` do the same, but also compare the current API to the old one, see if a type change, and if so keep the old one. `patch-nodatetime.rb` do the same as `patch.rb`, but remove all `"format": "date-time"`.
+```yaml
+oneOf:
+  - type: string
+    format: date
+  - type: string
+    fromat: date-string
+```
+[Rust OneOf](https://github.com/OpenAPITools/openapi-generator/issues/18527)
+[Rust date-time](https://github.com/OpenAPITools/openapi-generator/issues/19319)
 
-nodatetime was made because go doesn't handle date-time correctly.
+### date-time
+Some openapi-generator's codegen (Go) have herattic implementation of
+date-time and date. Go Codegen transpile date-time to time.Time 
+(both RFC3339, so it's ok), but don't implemente date
+(which fallback into string). Rust Codegen transpile everything to string
+
+With actual patches, everything is baslicly passed at string.
+suboptimal but it's part of the prototype
+
+### AWS v4 Siguature
+Typescript-fetch codegen does not support AWS v4 Siguature. PR prending
+for typescript-axios.
+
+## Patch
+`patch.rb` is a collections of workarounds for code generators limitations.
+
+ - nodatetime: remove date-time format from strings
+ - nodate: remove date format from strings
+ - nooneof: substitube oneOf for the first type defined
+ - noproperties-array: inflate array's items definition
