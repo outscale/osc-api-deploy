@@ -1,22 +1,24 @@
-#!/bin/bash
-set -e
+#!/bin/env bash
+
+set -euo pipefail
+
+if [ ! -v "1" ]; then
+    echo "please set new oapi version as argument. e.g. \"1.35.3\"" 1>&2
+    exit 1
+fi
 
 root=$(cd "$(dirname $0)/" && pwd)
 oapi_version=$1
 
-if [ -z "$oapi_version" ]; then
-    echo "please set new oapi version as argument. e.g. \"1.27.0\"" 1>&2
-    exit 1
-fi
-
 oapi_yaml_url="https://raw.githubusercontent.com/outscale/osc-api/${oapi_version}/outscale.yaml"
-curl --silent -o "$root/outscale-ori.yaml" "$oapi_yaml_url"
+oapi_yaml="$(mktemp outscale.XXXXXX.yaml)"
+curl --silent --retry 5 -o "${oapi_yaml}" "${oapi_yaml_url}"
 
-mv "$root/outscale.yaml" "/tmp/outscale.yaml"
-$root/hacks/patch.rb "$root/outscale-ori.yaml" "$root/old-outscale.yaml" > "$root/outscale.yaml"
-$root/hacks/patch-nooneof.rb "$root/outscale-ori.yaml" > "$root/outscale-java.yaml"
-$root/hacks/patch-nodatetime.rb "$root/outscale-ori.yaml" "$root/old-outscale.yaml" > "$root/outscale-go.yaml"
-$root/hacks/patch-noproperties-array.rb "$root/outscale-ori.yaml" > "$root/outscale-c.yaml"
-mv "/tmp/outscale.yaml" "$root/old-outscale.yaml"
+cleanup() {
+	rm "${oapi_yaml}" || true
+}
+trap cleanup EXIT
 
-rm "$root/outscale-ori.yaml"
+$root/hacks/patch.rb --nooneof --input "${oapi_yaml}" > "$root/outscale.yaml"
+$root/hacks/patch.rb --nooneof --nodatetime --input "${oapi_yaml}" > "$root/outscale-go.yaml"
+$root/hacks/patch.rb --noproperties-array --input "${oapi_yaml}" > "$root/outscale-c.yaml"
