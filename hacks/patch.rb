@@ -33,6 +33,8 @@ def patch_no_datetime(arg_info)
   # Remove date-time to make it fallback to string
   if arg_info["format"] == "date-time" then
     arg_info.delete("format")
+  elsif arg_info.key?("items") and arg_info["items"]["format"] == "date-time" then
+    arg_info["items"].delete("format")
   end
 
   return arg_info
@@ -42,6 +44,8 @@ def patch_no_date(arg_info)
   # Remove date to make it fallback to string
   if arg_info["format"] == "date" then
     arg_info.delete("format")
+  elsif arg_info.key?("items") and arg_info["items"]["format"] == "date" then
+    arg_info["items"].delete("format")
   end
 
   return arg_info
