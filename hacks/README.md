@@ -38,3 +38,4 @@ for typescript-axios.
  - nodate: remove date format from strings
  - nooneof: substitube oneOf for the first type defined
  - noproperties-array: inflate array's items definition
+ - patch: apply strategic merge patch in post-process. Should be last resort 
