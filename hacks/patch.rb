@@ -9,6 +9,7 @@ OptionParser.new do |opt|
   opt.on('--nodate') { || options[:nodate] = true }
   opt.on('--nooneof') { || options[:nooneof] = true }
   opt.on('--noproperties-array') { || options[:nopropertiesarray] = true }
+  opt.on('--patch FILE') { |o| options[:patch] = o }
   opt.on('--input FILE') { |o| options[:input] = o }
 end.parse!
 
@@ -99,6 +100,23 @@ api["components"]["schemas"].each do |call_name, call|
       end
     end
   end
+end
+
+if options.key?(:patch) then
+  # As a last ressource, patch openapi with strategic merge patch
+  patch = Psych.load_file options[:patch], permitted_classes: [Time]
+
+  def strtegic_merge(base, p)
+    base.merge(p) do |key, old_val, new_val|
+      if old_val.is_a?(Hash) and new_val.is_a?(Hash) then
+        strtegic_merge(old_val, new_val)
+      else
+        new_val
+      end
+    end
+  end
+
+  api = strtegic_merge(api, patch)
 end
 
 puts Psych.dump(api)
