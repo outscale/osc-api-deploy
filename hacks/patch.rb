@@ -16,7 +16,7 @@ end.parse!
 api = Psych.load_file options[:input], permitted_classes: [Time]
 
 def patch_no_oneof(arg_info)
-  # Remove all oneOf by substituing for the first element in the array
+  # Remove all oneOf by substituting for the first element in the array
   if arg_info.key?("oneOf") then
     arg_info["oneOf"][0].each do |key, val|
       arg_info[key] = val
@@ -52,7 +52,7 @@ def patch_no_date(arg_info)
   return arg_info
 end
 
-def patch_no_poperties_array(prop_info)
+def patch_no_properties_array(prop_info)
   if prop_info["type"] == "array" && prop_info.key?("items")
     items = prop_info["items"]
     if items.key?("$ref")
@@ -71,7 +71,7 @@ def patch_no_poperties_array(prop_info)
 end
 
 if options.key?(:nopropertiesarray) then
-  # Index properties for later use by patch_no_poperties_array 
+  # Index properties for later use by patch_no_properties_array 
   $no_properties = []
   api["components"]["schemas"].each do |call_name, call|
     unless call.key?("properties")
@@ -96,14 +96,14 @@ api["components"]["schemas"].each do |call_name, call|
       end
 
       if options.key?(:nopropertiesarray) then
-        arg_info = patch_no_poperties_array(arg_info)
+        arg_info = patch_no_properties_array(arg_info)
       end
     end
   end
 end
 
 if options.key?(:patch) then
-  # As a last ressource, patch openapi with strategic merge patch
+  # As a last resource, patch openapi with strategic merge patch
   patch = Psych.load_file options[:patch], permitted_classes: [Time]
 
   def strtegic_merge(base, p)
