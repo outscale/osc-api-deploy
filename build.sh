@@ -19,6 +19,6 @@ cleanup() {
 }
 trap cleanup EXIT
 
-$root/hacks/patch.rb --nooneof --input "${oapi_yaml}" > "$root/outscale.yaml"
-$root/hacks/patch.rb --nooneof --nodatetime --input "${oapi_yaml}" > "$root/outscale-go.yaml"
+$root/hacks/patch.rb --nooneof --patch "${root}/hacks/outscale.patch.yaml" --input "${oapi_yaml}" > "$root/outscale.yaml"
+$root/hacks/patch.rb --nooneof --nodatetime --patch "${root}/hacks/outscale-go.patch.yaml" --input "${oapi_yaml}" > "$root/outscale-go.yaml"
 $root/hacks/patch.rb --noproperties-array --input "${oapi_yaml}" > "$root/outscale-c.yaml"

@@ -5667,7 +5667,7 @@ components:
           description: The dates and times at which the volumes were created, in ISO
             8601 date-time format (for example, `2020-06-30T00:00:00.000Z`).
           items:
-            format: date
+            format: date-time
             type: string
           type: array
         LinkVolumeDeleteOnVmDeletion:
@@ -5683,7 +5683,7 @@ components:
           description: The dates and times at which the volumes were attached, in
             ISO 8601 date-time format (for example, `2020-06-30T00:00:00.000Z`).
           items:
-            format: date
+            format: date-time
             type: string
           type: array
         LinkVolumeLinkStates:

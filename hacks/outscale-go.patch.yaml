@@ -1,0 +1,8 @@
+---
+components:
+  schemas:
+    FiltersNetPeering:
+      properties:
+        ExpirationDates:
+          items:
+            format: date-time

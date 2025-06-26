@@ -1,0 +1,35 @@
+name: osc-api-deploy check PR
+on:
+  pull_request:
+    paths:
+      - outscale.yaml
+      - outscale-go.yaml
+      - outscale-c.yaml
+      - outscale-java.yaml
+
+jobs:
+  breaking-change-check:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        spec:
+          - outscale.yaml
+          - outscale-go.yaml
+          - outscale-c.yaml
+          - outscale-java.yaml
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: ${{ matrix.spec }}
+          path: ./base
+          ref: ${{ github.base_ref }}
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: ${{ matrix.spec }}
+          path: ./revision
+      - name: Checking breaking changes on ${{ matrix.spec }}
+        uses: oasdiff/oasdiff-action/breaking@main
+        with:
+          base: ./base/${{ matrix.spec }}
+          revision: ./revision/${{ matrix.spec }}
+          fail-on: ERR
