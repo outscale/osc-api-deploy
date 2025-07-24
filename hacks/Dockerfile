@@ -4,4 +4,4 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-CMD [ "./patch.rb" ]
+ENTRYPOINT [ "/usr/src/app/entrypoint.sh" ]
