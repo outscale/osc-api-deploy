@@ -18,6 +18,12 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN_OSC_SDK_GO }}
           API_VERSION: ${{ steps.release.outputs.TAG }}
         run: .github/scripts/build-osc-sdk.sh osc-sdk-go v2
+      - name: Trigger osc-sdk-go build (alpha)
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN_OSC_SDK_GO }}
+          API_VERSION: ${{ steps.release.outputs.TAG }}
+        run: .github/scripts/build-osc-sdk.sh osc-sdk-go v3
   osc-sdk-python:
     runs-on: ubuntu-latest
     steps:
@@ -59,7 +65,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN_OSC_SDK_C }}
           API_VERSION: ${{ steps.release.outputs.TAG }}
-        run: .github/scripts/build-osc-sdk.sh osc-sdk-c
+        run: .github/scripts/build-osc-sdk.sh osc-sdk-c master
   osc-sdk-js:
     runs-on: ubuntu-latest
     steps:
@@ -73,7 +79,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN_OSC_SDK_JS }}
           API_VERSION: ${{ steps.release.outputs.TAG }}
-        run: .github/scripts/build-osc-sdk.sh osc-sdk-js main
+        run: .github/scripts/build-osc-sdk.sh osc-sdk-js
   osc-sdk-java:
     runs-on: ubuntu-latest
     steps:
@@ -87,4 +93,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN_OSC_SDK_JAVA }}
           API_VERSION: ${{ steps.release.outputs.TAG }}
-        run: .github/scripts/build-osc-sdk.sh osc-sdk-java main
+        run: .github/scripts/build-osc-sdk.sh osc-sdk-java
