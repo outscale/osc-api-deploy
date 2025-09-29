@@ -2,7 +2,7 @@
 set -e
 
 WHICH_SDK=$1
-BRANCH="master"
+BRANCH="main"
 
 if [ $# -gt 1 ]; then
     BRANCH=$2
