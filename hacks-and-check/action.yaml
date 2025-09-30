@@ -1,0 +1,55 @@
+name: Hack and check
+description: patche OpenAPI specification and check for breaking changes
+
+inputs:
+  no-date-time:
+    description: Strip date-time fields
+    default: "no"
+  no-date:
+    description: Strip date fields
+    default: "no"
+  no-oneof:
+    description: Strip oneOf fields
+    default: "no"
+  no-properties-array:
+    description: inflate array's items definition
+    default: "no"
+  patch:
+    description: path to the OpenAPI specification patch
+    default: ""
+  input:
+    description: path to the input OpenAPI specification file
+    required: true
+  output:
+    description: path to the output OpenAPI specification file
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Create temporary file
+      shell: bash
+      id: temporary
+      run: echo "temp-file=$(mktemp -p $(pwd) $(basename ${{ inputs.output }}.XXXXXX))" >> $GITHUB_OUTPUT
+
+    - name: Patch OpenAPI specification
+      uses: outscale/osc-api-deploy/hacks@main
+      with:
+        no-date-time: ${{ inputs.no-date-time }}
+        no-date: ${{ inputs.no-date }}
+        no-oneof: ${{ inputs.no-oneof }}
+        no-properties-array: ${{ inputs.no-properties-array }}
+        patch: ${{ inputs.patch }}
+        input: ${{ inputs.input }}
+        output: ${{ outputs.temporary.temp-file }}
+
+    - name: Checking breaking changes
+      uses: oasdiff/oasdiff-action/breaking@main
+      with:
+        base: ${{ inputs.output }}
+        revision: ${{ outputs.temporary.temp-file }}
+        fail-on: ERR
+
+    - name: Move temporary file
+      shell: bash
+      run: mv ${{ outputs.temporary.temp-file }} ${{ inputs.output }}

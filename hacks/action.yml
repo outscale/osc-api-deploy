@@ -1,0 +1,37 @@
+name: Hack
+description: Toolbox for patching OpenAPI specification file
+
+inputs:
+  no-date-time:
+    description: Strip date-time fields
+    default: "no"
+  no-date:
+    description: Strip date fields
+    default: "no"
+  no-oneof:
+    description: Strip oneOf fields
+    default: "no"
+  no-properties-array:
+    description: inflate array's items definition
+    default: "no"
+  patch:
+    description: path to the OpenAPI specification patch
+    default: ""
+  input:
+    description: path to the input OpenAPI specification file
+    required: true
+  output:
+    description: path to the output OpenAPI specification file
+    required: true
+
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - ${{ inputs.no-date-time }}
+    - ${{ inputs.no-date }}
+    - ${{ inputs.no-oneof }}
+    - ${{ inputs.no-properties-array }}
+    - ${{ inputs.patch }}
+    - ${{ inputs.input }}
+    - ${{ inputs.output }}
