@@ -1,5 +1,10 @@
 name: osc-api-deploy check PR
+
+permissions:
+  contents: read
+
 on:
+  workflow_dispatch: {}
   pull_request:
     paths:
       - outscale.yaml
@@ -9,7 +14,7 @@ on:
 
 jobs:
   breaking-change-check:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         spec:
@@ -33,3 +38,16 @@ jobs:
           base: ./base/${{ matrix.spec }}
           revision: ./revision/${{ matrix.spec }}
           fail-on: ERR
+
+  lint:
+    name: Run Spectral
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      # Check out the repository
+      - uses: actions/checkout@v4
+
+      # Run Spectral
+      - uses: stoplightio/spectral-action@latest
+        with:
+          file_glob: 'outscale-*.yaml'
