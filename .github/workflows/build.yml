@@ -1,4 +1,9 @@
 name: osc-api-deploy release build
+
+permissions:
+  contents: write
+  pull-requests: write
+
 on:
   workflow_dispatch:
     inputs:
@@ -15,17 +20,21 @@ jobs:
         with:
           ref: main
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1
         with:
           ruby-version: '3.3'
       - name: Write Outscale API version to use
-        run: echo "${{ github.event.inputs.api_version }}" > api_version
+        env:
+          API_VERSION: ${{ github.event.inputs.api_version }}
+        run: echo "$API_VERSION" > api_version
       - name: check version duplication
         run: .github/scripts/release-check-duplicate.sh
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - name: auto-generate release
-        run: ./build.sh "${{ github.event.inputs.api_version }}"
+        env:
+          API_VERSION: ${{ github.event.inputs.api_version }}
+        run: ./build.sh "$API_VERSION"
       - name: push release branch
         run: .github/scripts/release-push.sh
         env:
