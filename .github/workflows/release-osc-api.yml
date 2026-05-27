@@ -3,6 +3,10 @@ on:
   release:
     types: [released]
 
+
+permissions:
+  contents: read
+
 jobs:
   osc-sdk-go:
     runs-on: ubuntu-latest
