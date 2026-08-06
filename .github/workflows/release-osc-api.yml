@@ -42,6 +42,21 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN_OSC_SDK_PYTHON }}
           API_VERSION: ${{ steps.release.outputs.TAG }}
         run: .github/scripts/build-osc-sdk.sh osc-sdk-python
+  osc-sdk-python-async-typed-sdk:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Getting release details
+        id: release
+        run: echo ::set-output name=TAG::${GITHUB_REF#refs/tags/}
+      - name: Trigger osc-sdk-python async typed SDK build
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN_OSC_SDK_PYTHON }}
+          API_VERSION: ${{ steps.release.outputs.TAG }}
+        run: .github/scripts/build-osc-sdk.sh osc-sdk-python feat/async-typed-sdk
   osc-sdk-rust:
     runs-on: ubuntu-latest
     steps:
