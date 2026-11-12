@@ -6,3 +6,16 @@ components:
         ExpirationDates:
           items:
             format: date-time
+paths:
+  "/CreateCa":
+    post:
+      deprecated: true
+  "/DeleteCa":
+    post:
+      deprecated: true
+  "/ReadCas":
+    post:
+      deprecated: true
+  "/UpdateCa":
+    post:
+      deprecated: true

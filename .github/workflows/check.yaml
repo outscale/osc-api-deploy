@@ -9,7 +9,6 @@ on:
     paths:
       - outscale.yaml
       - outscale-go.yaml
-      - outscale-c.yaml
       - outscale-java.yaml
 
 jobs:
@@ -20,7 +19,6 @@ jobs:
         spec:
           - outscale.yaml
           - outscale-go.yaml
-          - outscale-c.yaml
           - outscale-java.yaml
     steps:
       - uses: actions/checkout@v4

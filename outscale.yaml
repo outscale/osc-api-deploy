@@ -13941,6 +13941,7 @@ paths:
       - BasicAuth: []
       tags:
       - Ca
+      deprecated: true
   "/CreateClientGateway":
     post:
       description: |-
@@ -17211,6 +17212,7 @@ paths:
       - BasicAuth: []
       tags:
       - Ca
+      deprecated: true
   "/DeleteClientGateway":
     post:
       description: |-
@@ -20207,6 +20209,7 @@ paths:
       - BasicAuth: []
       tags:
       - Ca
+      deprecated: true
   "/ReadCatalog":
     post:
       description: Returns the price list of OUTSCALE services for the current Region.
@@ -24817,6 +24820,7 @@ paths:
       - BasicAuth: []
       tags:
       - Ca
+      deprecated: true
   "/UpdateDedicatedGroup":
     post:
       description: Modifies the name of a specified dedicated group.
