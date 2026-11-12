@@ -12,8 +12,8 @@ jobs:
   github-sanity-scan:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
     - name: Github sanity scanner
-      uses: outscale/github-sanity-scan@main
+      uses: outscale/github-sanity-scan@380a9927b4be45d9c4f6f66a4e8dfd7cf7b18513 # main
       with:
         no-pull-request-target: true

@@ -21,12 +21,12 @@ jobs:
           - outscale-go.yaml
           - outscale-java.yaml
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           sparse-checkout: ${{ matrix.spec }}
           path: ./base
           ref: ${{ github.base_ref }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           sparse-checkout: ${{ matrix.spec }}
           path: ./revision
@@ -43,7 +43,7 @@ jobs:
     continue-on-error: true
     steps:
       # Check out the repository
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       # Run Spectral
       - uses: stoplightio/spectral-action@6416fd018ae38e60136775066eb3e98172143141 # latest
