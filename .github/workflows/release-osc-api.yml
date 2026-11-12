@@ -71,20 +71,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN_OSC_SDK_RUST }}
           API_VERSION: ${{ steps.release.outputs.TAG }}
         run: .github/scripts/build-osc-sdk.sh osc-sdk-rust
-  osc-sdk-c:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-      - name: Getting release details
-        id: release
-        run: echo ::set-output name=TAG::${GITHUB_REF#refs/tags/}
-      - name: Trigger osc-sdk-C build
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN_OSC_SDK_C }}
-          API_VERSION: ${{ steps.release.outputs.TAG }}
-        run: .github/scripts/build-osc-sdk.sh osc-sdk-c master
   osc-sdk-js:
     runs-on: ubuntu-latest
     steps:
