@@ -22,7 +22,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1
         with:
-          ruby-version: '3.3'
+          ruby-version: '3.4.12'
       - name: Write Outscale API version to use
         env:
           API_VERSION: ${{ github.event.inputs.api_version }}
