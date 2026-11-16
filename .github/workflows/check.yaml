@@ -31,7 +31,7 @@ jobs:
           sparse-checkout: ${{ matrix.spec }}
           path: ./revision
       - name: Checking breaking changes on ${{ matrix.spec }}
-        uses: oasdiff/oasdiff-action/breaking@50e6a3413e5aa9c3ae4d8393c34745be44288b46 # main
+        uses: oasdiff/oasdiff-action/breaking@31561edf2a676c981e447bd45e1bb29aa93858bd # main
         with:
           base: ./base/${{ matrix.spec }}
           revision: ./revision/${{ matrix.spec }}
